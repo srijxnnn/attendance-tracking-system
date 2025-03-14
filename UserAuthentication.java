@@ -63,7 +63,6 @@ public class UserAuthentication extends JFrame
         userField.setFont(new Font("SansSerif", Font.PLAIN, 18));
         userField.setBackground(new Color(250, 250, 255));
         formPanel.add(userField);
-
         
         JLabel emailLabel=new JLabel("Email :");
         emailLabel.setFont(new Font("SansSerif", Font.PLAIN, 18));
@@ -89,14 +88,39 @@ public class UserAuthentication extends JFrame
         passField.setBackground(new Color(250, 250, 255));
         formPanel.add(passField);
 
-       
         GradientButton registerButton=new GradientButton("Register",
             new Color(65, 105, 225), new Color(30, 144, 255),
             new Color(0, 144, 255), new Color(0, 0, 25));
         registerButton.setBounds(50, 350, 300, 45);
+
+        registerButton.addActionListener(e->
+        {
+            String username=userField.getText();
+            String email=emailField.getText();
+            String password=new String(passField.getPassword());
+    
+            System.out.println("Username: "+username);
+            System.out.println("Email: "+email);
+            System.out.println("Password: "+password);
+
+            userField.setText("");
+            emailField.setText("");
+            passField.setText("");
+
+            if(!username.isEmpty() && !email.isEmpty() && !password.isEmpty()) 
+            {
+                RegisterUser registerUser=new RegisterUser();
+                registerUser.register(username, email, password);
+                JOptionPane.showMessageDialog(null, "Registration Successful!");
+            } 
+            else 
+            {
+                JOptionPane.showMessageDialog(null, "All fields are required!", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        
+        });
         formPanel.add(registerButton);
 
-        
         JLabel switchLabel=new JLabel("<HTML><U>Already have an account? Sign In</U></HTML>");
         switchLabel.setFont(new Font("SansSerif", Font.ITALIC, 14));
         switchLabel.setForeground(new Color(100, 100, 200));
@@ -110,6 +134,7 @@ public class UserAuthentication extends JFrame
                 animateTransition(true);
             }
         });
+
         formPanel.add(switchLabel);
 
         formPanel.revalidate();
@@ -155,6 +180,30 @@ public class UserAuthentication extends JFrame
             new Color(65, 105, 225), new Color(30, 144, 255),
             new Color(0, 144, 255), new Color(0, 0, 25));
         signInButton.setBounds(50, 270, 300, 45);
+
+        signInButton.addActionListener((actionEvent)->
+        {
+            String email=emailField.getText();
+            String password=new String(passField.getPassword());
+
+            System.out.println("Email : "+email);
+            System.out.println("Password : "+password);
+
+            emailField.setText("");
+            passField.setText("");
+
+            RegisterUser registerUser=new RegisterUser();
+            boolean isAuthenticated=registerUser.login(email, password);
+
+            if(isAuthenticated) 
+            {
+                JOptionPane.showMessageDialog(null, "Login Successful!");
+            } 
+            else 
+            {
+                JOptionPane.showMessageDialog(null, "Invalid Email or Password", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
         formPanel.add(signInButton);
 
         JLabel switchLabel=new JLabel("<HTML><U>Don't have an account? Register</U></HTML>");
