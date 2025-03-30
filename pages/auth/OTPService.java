@@ -6,16 +6,16 @@ import javax.mail.internet.*;
 import java.util.Scanner;
 
 public class OTPService {
-    private static final String senderEmail = "anujkaushal1068@gmail.com";  // Change this
-    private static final String senderPassword = "mbsf pdzl niiu gsjc"; // Change this (Use App Password)
+    private static final String senderEmail = "anujkaushal1068@gmail.com";
+    private static final String senderPassword = "mbsf pdzl niiu gsjc";
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        String recipientEmail = "cse23058@iiitkalyani.ac.in"; // Change this to the receiver's email
+        String recipientEmail = "cse23058@iiitkalyani.ac.in";
 
         // Generate a 6-digit OTP
         String generatedOTP = generateOTP();
-        System.out.println("Generated OTP: " + generatedOTP); // For debugging
+        System.out.println("Generated OTP: " + generatedOTP);
 
         // Send OTP to user's email
         boolean emailSent = sendOTP(recipientEmail, generatedOTP);
@@ -37,14 +37,12 @@ public class OTPService {
         scanner.close();
     }
 
-    // Function to generate a 6-digit OTP
     public static String generateOTP() {
         Random random = new Random();
-        int otp = 100000 + random.nextInt(900000); // Ensures a 6-digit number
+        int otp = 100000 + random.nextInt(900000);
         return String.valueOf(otp);
     }
 
-    // Function to send OTP via email
     public static boolean sendOTP(String recipientEmail, String otp) {
         Properties properties = new Properties();
         properties.put("mail.smtp.auth", "true");
