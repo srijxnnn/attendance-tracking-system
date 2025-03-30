@@ -1,13 +1,13 @@
 package pages.student;
 
 import db.DatabaseConnection;
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
+import javax.swing.*;
 
 public class StudentCalendar extends JFrame {
 
@@ -235,7 +235,9 @@ public class StudentCalendar extends JFrame {
             public void mouseClicked(MouseEvent e)
             {
                 JOptionPane.showMessageDialog(null, optionLeaveApplicationLabel.getText() + " clicked");
-                //Add action listener
+                SwingUtilities.invokeLater(() -> {
+                    new StudentLeaveApplicationPage(userId).setVisible(true);
+                });
 
             }
         });

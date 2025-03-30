@@ -1,7 +1,6 @@
 package pages.student;
 
 import db.DatabaseConnection;
-
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.RoundRectangle2D;
@@ -300,7 +299,9 @@ public class AttendanceReportPage extends JFrame
             public void mouseClicked(MouseEvent e)
             {
                 JOptionPane.showMessageDialog(null, optionLeaveApplicationLabel.getText() + " clicked");
-                //Add action listener
+                SwingUtilities.invokeLater(() -> {
+                    new StudentLeaveApplicationPage(userId).setVisible(true);
+                });
 
             }
         });
