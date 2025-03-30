@@ -4,11 +4,15 @@ import db.DatabaseConnection;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.*;
 import javax.swing.*;
+import javax.swing.Timer;
+
 
 public class StudentDashboard extends JFrame {
     private int attendancePercentage;
@@ -379,54 +383,140 @@ public class StudentDashboard extends JFrame {
         progressPanel.setBounds(800, 70, 140, 140);
         progressPanel.setOpaque(false);
 
-        // Bar Chart Panel (Attendance Stats)
+        JPanel statsPanel = new JPanel();
+        statsPanel.setLayout(null);
+        statsPanel.setBounds(210, 250, 760, 400);
+        statsPanel.setOpaque(false);
+
+        // Bar Chart Panel
         JPanel barChartPanel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 Graphics2D g2 = (Graphics2D) g;
 
-
                 g2.setColor(new Color(255, 255, 255, 100));
                 g2.fillRect(0, 0, getWidth(), getHeight());
-
 
                 g2.setColor(Color.BLACK);
                 g2.setFont(new Font("SansSerif", Font.BOLD, 18));
                 g2.drawString("Attendance Chart", 20, 30);
 
-
                 int chartBase = getHeight() - 50;
                 int barWidth = 80;
                 int spacing = 150;
-
                 int scaleFactor = 5;
 
-                // Working Days bar
-                g2.setColor(new Color(52, 152, 219)); // Blue bar
+                g2.setColor(new Color(52, 152, 219));
                 int workingBarHeight = workingDays * scaleFactor;
                 g2.fillRect(50, chartBase - workingBarHeight, barWidth, workingBarHeight);
 
-                // Absences bar
-                g2.setColor(new Color(231, 76, 60)); // Red bar
+                g2.setColor(new Color(231, 76, 60));
                 int absenceBarHeight = absences * scaleFactor;
                 g2.fillRect(50 + spacing, chartBase - absenceBarHeight, barWidth, absenceBarHeight);
 
-                // Bar labels
                 g2.setColor(Color.BLACK);
                 g2.setFont(new Font("SansSerif", Font.PLAIN, 14));
                 g2.drawString("Working Days (" + workingDays + ")", 50, chartBase + 20);
                 g2.drawString("Absences (" + absences + ")", 50 + spacing, chartBase + 20);
             }
         };
-        barChartPanel.setBounds(210, 250, 760, 400);
+        barChartPanel.setBounds(0, 0, 355, 400);
         barChartPanel.setOpaque(false);
 
+        // Streaks Panel
+        JPanel streaksPanel = new JPanel();
+        streaksPanel.setLayout(new GridLayout(3, 1, 10, 10));
+        streaksPanel.setBounds(380, 50, 370, 300);
+        streaksPanel.setOpaque(false);
+
+        Map<String, Integer> map = StudentStreakFetcher.getStudentStreaks(studentId);
+
+        ArrayList<String> subjects = new ArrayList<>();
+        ArrayList<Integer> streaks = new ArrayList<>();
+
+        for (Map.Entry<String, Integer> entry : map.entrySet()) {
+            subjects.add(entry.getKey());
+            streaks.add(entry.getValue());
+            System.out.println("Course Name: " + entry.getKey() + ", Streak: " + entry.getValue());
+        }
+
+        Color[] colors = {new Color(0, 128, 255), new Color(50, 205, 50), new Color(70, 130, 180)};
+
+        
+        for (int i = 0; i < subjects.size(); i++) {
+            JPanel streakItem = new JPanel();
+            streakItem.setLayout(new BorderLayout());
+            streakItem.setBackground(new Color(255, 255, 255, 100));
+            streakItem.setBounds(0, 0, 200, 70); // Increase width from 400 to 500
+            streakItem.setPreferredSize(new Dimension(200, 70));
+            streakItem.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2, true));
+            streakItem.setBorder(BorderFactory.createCompoundBorder(
+                streakItem.getBorder(),
+                BorderFactory.createEmptyBorder(10, 10, 10, 10)  // Add padding for better effect
+            ));
+            
+            // Set rounded corners for the streak item
+            streakItem.setBorder(BorderFactory.createLineBorder(new Color(0, 0, 0, 100), 4, true));
+
+            // Load the GIF using ImageIcon for animation
+            String gifPath = "./pages/student/fire.png";  // Replace with the correct path
+            File gifFile = new File(gifPath);
+
+            if (gifFile.exists()) {
+                System.out.println("GIF found: " + gifPath);
+            } else {
+                System.out.println("GIF not found: " + gifPath);
+            }
+
+            // Create the ImageIcon directly
+            ImageIcon fireGif = new ImageIcon(gifPath);
+            Image image = fireGif.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+            ImageIcon resizedIcon = new ImageIcon(image);
+            // Create a JLabel to hold the GIF and ensure it is animated
+            JLabel gifLabel = new JLabel(resizedIcon);
+            gifLabel.setPreferredSize(new Dimension(70, 10));  // Adjust the size to fit better
+
+            // Wrap the JLabel in a JPanel for proper placement
+            JPanel gifPanel = new JPanel();
+            gifPanel.setLayout(new BorderLayout());  // FlowLayout or BorderLayout can be used
+            gifPanel.setOpaque(false);  // Transparent background
+            gifPanel.add(gifLabel, BorderLayout.WEST);  // Add GIF to center
+            gifPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));  // Adds 20px padding on the left
+
+            // Add the gifPanel to the streakItem panel (west side)
+            streakItem.add(gifPanel, BorderLayout.WEST);
+            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            String[] fonts = ge.getAvailableFontFamilyNames();
+            for (String font : fonts) {
+                System.out.println(font);
+            }
+            // Create a JLabel for the streak text
+            JLabel streakLabel = new JLabel(subjects.get(i) + " Streak: " + streaks.get(i) + " days", JLabel.CENTER);
+            streakLabel.setFont(new Font("Calibri", Font.BOLD, 18));
+            streakLabel.setForeground(Color.DARK_GRAY);
+
+            // Add the streak label to the center of the streakItem panel
+            streakItem.add(streakLabel, BorderLayout.CENTER);
+
+            // Add the streak item to the main streaks panel
+            streaksPanel.add(streakItem);
+        }
+
+        
+        
+        // Add streaksPanel to the background panel
+        backgroundPanel.add(streaksPanel);
+
+
+        // Adding to Parent Panel
+        statsPanel.add(barChartPanel);
+        statsPanel.add(streaksPanel);
         backgroundPanel.add(sidebar);
         backgroundPanel.add(headerPanel);
         backgroundPanel.add(topInfoPanel);
         backgroundPanel.add(progressPanel);
-        backgroundPanel.add(barChartPanel);
+        backgroundPanel.add(statsPanel);
 
         add(backgroundPanel);
 

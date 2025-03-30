@@ -3,7 +3,6 @@ package pages.auth;
 import java.util.*;
 import javax.mail.*;
 import javax.mail.internet.*;
-import java.util.Scanner;
 
 public class OTPService {
     private static final String senderEmail = "anujkaushal1068@gmail.com";
@@ -13,21 +12,17 @@ public class OTPService {
         Scanner scanner = new Scanner(System.in);
         String recipientEmail = "cse23058@iiitkalyani.ac.in";
 
-        // Generate a 6-digit OTP
         String generatedOTP = generateOTP();
         System.out.println("Generated OTP: " + generatedOTP);
 
-        // Send OTP to user's email
         boolean emailSent = sendOTP(recipientEmail, generatedOTP);
         if (!emailSent) {
             System.out.println("Failed to send OTP. Exiting.");
         }
 
-        // Ask user to enter OTP
         System.out.print("Enter the OTP sent to your email: ");
         String enteredOTP = scanner.nextLine();
 
-        // Verify OTP
         if (generatedOTP.equals(enteredOTP)) {
             System.out.println("OTP Verified Successfully! User Authenticated.");
         } else {
@@ -38,9 +33,7 @@ public class OTPService {
     }
 
     public static String generateOTP() {
-        Random random = new Random();
-        int otp = 100000 + random.nextInt(900000);
-        return String.valueOf(otp);
+        return String.valueOf(100000 + new Random().nextInt(900000));
     }
 
     public static boolean sendOTP(String recipientEmail, String otp) {
@@ -59,15 +52,25 @@ public class OTPService {
 
         try {
             Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(senderEmail));
+            message.setFrom(new InternetAddress(senderEmail, "Attend Assist OTP Service"));
+            message.setReplyTo(InternetAddress.parse("comnoreply@yourdomain"));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipientEmail));
-            message.setSubject("Your OTP Code");
-            message.setText("Your One-Time Password (OTP) is: " + otp + "\n\nThis OTP is valid for 5 minutes.");
+            message.setSubject("Your One-Time Password (OTP)");
+            message.setContent(
+                "<html><body>"
+                + "<h3 style='color: #333;'>Your OTP Code</h3>"
+                + "<p>Your One-Time Password (OTP) is: <b>" + otp + "</b></p>"
+                + "<p>This OTP is valid for 5 minutes.</p>"
+                + "<p style='font-size: 12px; color: gray;'>If you did not request this, please ignore this email.</p>"
+                + "<p><a href='https://yourwebsite.com/unsubscribe' style='color: blue;'>Unsubscribe</a></p>"
+                + "</body></html>",
+                "text/html"
+            );
 
             Transport.send(message);
             System.out.println("OTP sent to " + recipientEmail);
             return true;
-        } catch (MessagingException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Failed to send OTP.");
             return false;
