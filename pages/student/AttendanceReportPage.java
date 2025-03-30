@@ -25,6 +25,7 @@ public class AttendanceReportPage extends JFrame
 
     private int userId;
     private int studentId;
+    private String studentName = "Unknown";
 
     public AttendanceReportPage(int userId)
     {
@@ -144,6 +145,7 @@ public class AttendanceReportPage extends JFrame
                 try (ResultSet rs = ps1.executeQuery()) {
                     if (rs.next()) {
                         studentId = rs.getInt("id");
+                        studentName = rs.getString("name");
                     }
                 }
             }
@@ -210,7 +212,7 @@ public class AttendanceReportPage extends JFrame
         userPanel.setBounds(0, 0, 200, 150);
         userPanel.setBackground(new Color(51, 51, 51));
 
-        JLabel usernameLabel=new JLabel("Srijan", SwingConstants.CENTER);
+        JLabel usernameLabel=new JLabel(studentName, SwingConstants.CENTER);
         usernameLabel.setForeground(Color.WHITE);
         usernameLabel.setFont(new Font("SansSerif", Font.BOLD, 14));
         usernameLabel.setBounds(0, 90, 200, 20);
