@@ -29,7 +29,7 @@ public class UserAuthentication extends JFrame
         formPanel.setLayout(null);
         formPanel.setBounds(0, 0, 500, 600);
 
-        img=new ImageIcon("logo.png");
+        img=new ImageIcon("pages/auth/logo.png");
         logoPanel=new GradientPanel(new Color(100, 149, 237), new Color(65, 105, 225));
         logoPanel.setLayout(new BorderLayout());
         logoPanel.setBounds(500, 0, 500, 600);
@@ -130,9 +130,9 @@ public class UserAuthentication extends JFrame
 
             if(!username.isEmpty() && !email.isEmpty() && !password.isEmpty())
             {
-                RegisterUser registerUser=new RegisterUser();
-                registerUser.register(username, email, password, role);
-                JOptionPane.showMessageDialog(null, "Registration Successful!");
+                SwingUtilities.invokeLater(OtpVerificationDialog::showOtpDialog);
+                // RegisterUser registerUser=new RegisterUser();
+                // registerUser.register(username, email, password, role);
             }
             else
             {
