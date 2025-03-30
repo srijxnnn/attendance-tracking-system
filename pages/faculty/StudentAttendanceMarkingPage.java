@@ -220,6 +220,9 @@ public class StudentAttendanceMarkingPage extends JFrame
             public void mouseClicked(MouseEvent e)
             {
                 JOptionPane.showMessageDialog(null, optionLeaveRequestLabel.getText() + " clicked");
+                SwingUtilities.invokeLater(() -> {
+                    new FacultyLeaveRequestPermission(userID).setVisible(true);
+                });
 
             }
         });
