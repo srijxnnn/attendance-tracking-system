@@ -486,11 +486,7 @@ public class StudentDashboard extends JFrame {
 
             // Add the gifPanel to the streakItem panel (west side)
             streakItem.add(gifPanel, BorderLayout.WEST);
-            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-            String[] fonts = ge.getAvailableFontFamilyNames();
-            for (String font : fonts) {
-                System.out.println(font);
-            }
+            
             // Create a JLabel for the streak text
             JLabel streakLabel = new JLabel(subjects.get(i) + " Streak: " + streaks.get(i) + " days", JLabel.CENTER);
             streakLabel.setFont(new Font("Calibri", Font.BOLD, 18));
