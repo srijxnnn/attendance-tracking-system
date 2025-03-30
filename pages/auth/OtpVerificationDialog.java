@@ -1,21 +1,24 @@
 package pages.auth;
+
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.text.*;
+import pages.faculty.FacultyDashboard;
+import pages.student.StudentDashboard;
 
 public class OtpVerificationDialog 
 {
 
     public static void main(String[] args) 
     {
-        SwingUtilities.invokeLater(OtpVerificationDialog::showOtpDialog);
+        SwingUtilities.invokeLater(() -> OtpVerificationDialog.showOtpDialog("username", "email", "password", "student"));
     }
 
-    public static void showOtpDialog() 
+    public static void showOtpDialog(String username, String email, String password, String role) 
     {
-        OtpPanel panel=new OtpPanel();
+        OtpPanel panel=new OtpPanel(username, email, password, role);
         JOptionPane.showOptionDialog(
                 null,
                 panel,
@@ -36,12 +39,28 @@ public class OtpVerificationDialog
         private JLabel phoneLabel; // will hold our mobile.png image
         private JTextField[] otpFields = new JTextField[6];
         private JButton verifyButton;
+        private String generatedOTP; // Store OTP for verification
+        private OTPService otpService; // OTP service object
+        // private String reviever = "cse23058@iiitkalyani.ac.in";
+        private String username;
+        private String email;
+        private String password;
+        private String role;
 
-        public OtpPanel() 
+        public OtpPanel(String username, String email, String password, String role) 
         {
+            this.username = username;
+            this.email = email;
+            this.password = password;
+            this.role = role;
             setLayout(null);
             setPreferredSize(new Dimension(450, 400));
             setOpaque(false);
+
+            otpService = new OTPService(); // Create OTPService object
+            generatedOTP = OTPService.generateOTP(); // Generate OTP
+            OTPService.sendOTP(email, generatedOTP); // Send OTP on dialog open
+            System.out.println(generatedOTP);
 
             // Start fade-in timer
             fadeTimer = new Timer(20, e -> {
@@ -144,7 +163,10 @@ public class OtpVerificationDialog
             resendLabel.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
-                    JOptionPane.showMessageDialog(OtpPanel.this, "Resend OTP clicked!");
+                    JOptionPane.showMessageDialog(OtpPanel.this, "Otp Resent, Check your Inbox!");
+                    generatedOTP = OTPService.generateOTP(); // Generate OTP
+                    OTPService.sendOTP(email, generatedOTP); // Send OTP on dialog open
+                    System.out.println(generatedOTP);
                 }
             });
             add(resendLabel);
@@ -166,13 +188,41 @@ public class OtpVerificationDialog
                 for (JTextField tf : otpFields) {
                     sb.append(tf.getText());
                 }
-                String otpStr = sb.toString();
-                try {
-                    int otp = Integer.parseInt(otpStr);
-                    System.out.println("Entered OTP: " + otp);
-                    JOptionPane.showMessageDialog(this, "Entered OTP: " + otp);
-                } catch (NumberFormatException ex) {
-                    JOptionPane.showMessageDialog(this, "Invalid OTP entered.");
+                String enteredOtp = sb.toString();
+            
+                if (enteredOtp.equals(generatedOTP)) {
+                    JOptionPane.showMessageDialog(this, "Registered Successfully");
+                    RegisterUser registerUser=new RegisterUser();
+                    registerUser.register(username, email, password, role);
+                    int userID = registerUser.getUserID();
+
+                    Window window = SwingUtilities.getWindowAncestor(OtpPanel.this);
+                    if (window != null) {
+                        window.dispose();
+                    }
+
+                    if(role.equals("faculty"))
+                    {
+                        SwingUtilities.invokeLater(() ->
+                        {
+                            new FacultyDashboard(userID).setVisible(true);
+                        });
+                    } else if (role.equals("student")) {
+                        SwingUtilities.invokeLater(() ->
+                        {
+                            new StudentDashboard(userID).setVisible(true);
+                        });
+                    }
+
+                } else {
+                    JOptionPane.showMessageDialog(this, "Incorrect OTP! Please enter the correct OTP.", "Error", JOptionPane.ERROR_MESSAGE);
+                    // Clear OTP fields
+                    for (JTextField tf : otpFields) {
+                        tf.setText("");
+                    }
+                    
+                    // Refocus on first field
+                    otpFields[0].requestFocusInWindow();
                 }
             });
         }

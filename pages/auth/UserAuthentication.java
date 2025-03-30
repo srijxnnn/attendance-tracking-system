@@ -6,6 +6,8 @@ import pages.student.StudentDashboard;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.text.*;
 
 public class UserAuthentication extends JFrame
 {
@@ -130,7 +132,7 @@ public class UserAuthentication extends JFrame
 
             if(!username.isEmpty() && !email.isEmpty() && !password.isEmpty())
             {
-                SwingUtilities.invokeLater(OtpVerificationDialog::showOtpDialog);
+                SwingUtilities.invokeLater(() -> OtpVerificationDialog.showOtpDialog(username, email, password, role));
                 // RegisterUser registerUser=new RegisterUser();
                 // registerUser.register(username, email, password, role);
             }
@@ -409,3 +411,4 @@ class GradientButton extends JButton
         super.paintComponent(g);
     }
 }
+
