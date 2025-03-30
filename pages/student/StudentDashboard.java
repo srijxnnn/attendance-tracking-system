@@ -1,6 +1,6 @@
 package pages.student;
 
-import javax.swing.*;
+import db.DatabaseConnection;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -8,11 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import javax.swing.Timer;
-import db.DatabaseConnection;
-import pages.faculty.FacultyCalendar;
-import pages.faculty.FacultyDashboard;
-import pages.faculty.StudentAttendanceMarkingPage;
+import javax.swing.*;
 
 public class StudentDashboard extends JFrame {
     private int attendancePercentage;
@@ -238,7 +234,9 @@ public class StudentDashboard extends JFrame {
             public void mouseClicked(MouseEvent e)
             {
                 JOptionPane.showMessageDialog(null, optionLeaveApplicationLabel.getText() + " clicked");
-                //Add action listener
+                SwingUtilities.invokeLater(() -> {
+                    new StudentLeaveApplicationPage(userId).setVisible(true);
+                });
 
             }
         });

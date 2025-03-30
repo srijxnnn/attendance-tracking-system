@@ -1,16 +1,15 @@
 package pages.student;
 
 import db.DatabaseConnection;
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.*;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 
 public class StudentLeaveApplicationPage extends JFrame {
     private String studentName = "";
@@ -26,20 +25,30 @@ public class StudentLeaveApplicationPage extends JFrame {
 
     // We'll assume you pass in the studentId from somewhere (login, etc.)
     private int studentId;
+    private int userId;
 
-    public StudentLeaveApplicationPage(int studentId) {
-        this.studentId = 1;
-        loadStudentData(studentId);
+    public StudentLeaveApplicationPage(int userId) {
+        this.userId=userId;
+        loadStudentData(userId);
         initUI();
-        loadRecentLeaves(studentId);
+        loadRecentLeaves();
     }
 
     /**
      * Loads student info (name, reg_no) and their course list from DB.
      */
-    private void loadStudentData(int studentId) {
+    private void loadStudentData(int userId) {
         try (Connection conn = DatabaseConnection.getInstance()) {
             // 1) Load student basic info
+            String studentIdQuery = "SELECT * FROM students WHERE user_id = ?";
+            try (PreparedStatement ps = conn.prepareStatement(studentIdQuery)) {
+                ps.setInt(1, userId);
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        studentId = rs.getInt("id");
+                    }
+                }
+            }
             String studentInfoQuery = "SELECT name, reg_no FROM students WHERE id = ?";
             try (PreparedStatement ps = conn.prepareStatement(studentInfoQuery)) {
                 ps.setInt(1, studentId);
@@ -152,32 +161,156 @@ public class StudentLeaveApplicationPage extends JFrame {
 
         // Sidebar Options
         String[] options = {"Dashboard", "Leave Application", "Student Calendar", "Attendance Report"};
-        for (int i = 0; i < options.length; i++) {
-            JLabel optionLabel = new JLabel(options[i], SwingConstants.CENTER);
-            optionLabel.setForeground(Color.WHITE);
-            optionLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
-            optionLabel.setOpaque(true);
-            optionLabel.setBackground(new Color(51, 51, 51));
-            optionLabel.setBounds(0, 160 + i * 50, 200, 40);
+        // for (int i = 0; i < options.length; i++) {
+        //     JLabel optionLabel = new JLabel(options[i], SwingConstants.CENTER);
+        //     optionLabel.setForeground(Color.WHITE);
+        //     optionLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        //     optionLabel.setOpaque(true);
+        //     optionLabel.setBackground(new Color(51, 51, 51));
+        //     optionLabel.setBounds(0, 160 + i * 50, 200, 40);
 
-            optionLabel.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseEntered(MouseEvent e) {
-                    optionLabel.setBackground(new Color(70, 70, 70));
-                }
+        //     optionLabel.addMouseListener(new MouseAdapter() {
+        //         @Override
+        //         public void mouseEntered(MouseEvent e) {
+        //             optionLabel.setBackground(new Color(70, 70, 70));
+        //         }
 
-                @Override
-                public void mouseExited(MouseEvent e) {
-                    optionLabel.setBackground(new Color(51, 51, 51));
-                }
+        //         @Override
+        //         public void mouseExited(MouseEvent e) {
+        //             optionLabel.setBackground(new Color(51, 51, 51));
+        //         }
 
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    JOptionPane.showMessageDialog(null, optionLabel.getText() + " clicked");
-                }
-            });
-            sidebar.add(optionLabel);
-        }
+        //         @Override
+        //         public void mouseClicked(MouseEvent e) {
+        //             JOptionPane.showMessageDialog(null, optionLabel.getText() + " clicked");
+        //         }
+        //     });
+        //     sidebar.add(optionLabel);
+        // }
+        JLabel optionDashboardLabel=new JLabel(options[0], SwingConstants.CENTER);
+        optionDashboardLabel.setForeground(Color.WHITE);
+        optionDashboardLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        optionDashboardLabel.setOpaque(true);
+        optionDashboardLabel.setBackground(new Color(51, 51, 51));
+        optionDashboardLabel.setBounds(0, 160+0*50, 200, 40);
+
+        optionDashboardLabel.addMouseListener(new MouseAdapter()
+        {
+            @Override
+            public void mouseEntered(MouseEvent e)
+            {
+                optionDashboardLabel.setBackground(new Color(70, 70, 70));
+            }
+            @Override
+            public void mouseExited(MouseEvent e)
+            {
+                optionDashboardLabel.setBackground(new Color(51, 51, 51));
+            }
+            @Override
+            public void mouseClicked(MouseEvent e)
+            {
+                JOptionPane.showMessageDialog(null, optionDashboardLabel.getText() + " clicked");
+                SwingUtilities.invokeLater(() ->
+                {
+                    new StudentDashboard(userId).setVisible(true);
+                });
+
+            }
+        });
+        sidebar.add(optionDashboardLabel);
+
+        JLabel optionLeaveApplicationLabel=new JLabel(options[1], SwingConstants.CENTER);
+        optionLeaveApplicationLabel.setForeground(Color.WHITE);
+        optionLeaveApplicationLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        optionLeaveApplicationLabel.setOpaque(true);
+        optionLeaveApplicationLabel.setBackground(new Color(51, 51, 51));
+        optionLeaveApplicationLabel.setBounds(0, 160+1*50, 200, 40);
+
+        optionLeaveApplicationLabel.addMouseListener(new MouseAdapter()
+        {
+            @Override
+            public void mouseEntered(MouseEvent e)
+            {
+                optionLeaveApplicationLabel.setBackground(new Color(70, 70, 70));
+            }
+            @Override
+            public void mouseExited(MouseEvent e)
+            {
+                optionLeaveApplicationLabel.setBackground(new Color(51, 51, 51));
+            }
+            @Override
+            public void mouseClicked(MouseEvent e)
+            {
+                JOptionPane.showMessageDialog(null, optionLeaveApplicationLabel.getText() + " clicked");
+                SwingUtilities.invokeLater(() -> {
+                    new StudentLeaveApplicationPage(userId).setVisible(true);
+                });
+
+            }
+        });
+        sidebar.add(optionLeaveApplicationLabel);
+
+        JLabel optionCalenderLabel=new JLabel(options[2], SwingConstants.CENTER);
+        optionCalenderLabel.setForeground(Color.WHITE);
+        optionCalenderLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        optionCalenderLabel.setOpaque(true);
+        optionCalenderLabel.setBackground(new Color(51, 51, 51));
+        optionCalenderLabel.setBounds(0, 160+2*50, 200, 40);
+
+        optionCalenderLabel.addMouseListener(new MouseAdapter()
+        {
+            @Override
+            public void mouseEntered(MouseEvent e)
+            {
+                optionCalenderLabel.setBackground(new Color(70, 70, 70));
+            }
+            @Override
+            public void mouseExited(MouseEvent e)
+            {
+                optionCalenderLabel.setBackground(new Color(51, 51, 51));
+            }
+            @Override
+            public void mouseClicked(MouseEvent e)
+            {
+                JOptionPane.showMessageDialog(null, optionCalenderLabel.getText() + " clicked");
+                SwingUtilities.invokeLater(() ->
+                {
+                    new StudentCalendar(userId).setVisible(true);
+                });
+            }
+        });
+        sidebar.add(optionCalenderLabel);
+
+        JLabel optionStudentAttendanceReportLabel=new JLabel(options[3], SwingConstants.CENTER);
+        optionStudentAttendanceReportLabel.setForeground(Color.WHITE);
+        optionStudentAttendanceReportLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        optionStudentAttendanceReportLabel.setOpaque(true);
+        optionStudentAttendanceReportLabel.setBackground(new Color(51, 51, 51));
+        optionStudentAttendanceReportLabel.setBounds(0, 160+3*50, 200, 40);
+
+        optionStudentAttendanceReportLabel.addMouseListener(new MouseAdapter()
+        {
+            @Override
+            public void mouseEntered(MouseEvent e)
+            {
+                optionStudentAttendanceReportLabel.setBackground(new Color(70, 70, 70));
+            }
+            @Override
+            public void mouseExited(MouseEvent e)
+            {
+                optionStudentAttendanceReportLabel.setBackground(new Color(51, 51, 51));
+            }
+            @Override
+            public void mouseClicked(MouseEvent e)
+            {
+                JOptionPane.showMessageDialog(null, optionStudentAttendanceReportLabel.getText() + " clicked");
+                SwingUtilities.invokeLater(()->
+                {
+                    new AttendanceReportPage(userId).setVisible(true);
+                });
+            }
+        });
+        sidebar.add(optionStudentAttendanceReportLabel);
 
         // Header Panel
         JPanel headerPanel = new JPanel(null);
@@ -308,7 +441,7 @@ public class StudentLeaveApplicationPage extends JFrame {
             reasonTextArea.setText("");
 
             // Reload the recent leaves table
-            loadRecentLeaves(studentId);
+            loadRecentLeaves();
 
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -319,7 +452,7 @@ public class StudentLeaveApplicationPage extends JFrame {
     /**
      * Loads the student’s recent leave applications from DB into the table.
      */
-    private void loadRecentLeaves(int studentId) {
+    private void loadRecentLeaves() {
         // Clear existing rows
         tableModel.setRowCount(0);
 
@@ -334,6 +467,7 @@ public class StudentLeaveApplicationPage extends JFrame {
              PreparedStatement ps = conn.prepareStatement(query)) {
 
             ps.setInt(1, studentId);
+            System.out.println(studentId);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     Date leaveDate    = rs.getDate("date");
