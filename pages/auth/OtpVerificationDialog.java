@@ -5,7 +5,7 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.text.*;
-import pages.faculty.FacultyDashboard;
+import pages.faculty.FacultyProfilePage;
 import pages.student.ProfileFormPage;
 
 public class OtpVerificationDialog 
@@ -210,9 +210,8 @@ public class OtpVerificationDialog
 
                     if(role.equals("faculty"))
                     {
-                        SwingUtilities.invokeLater(() ->
-                        {
-                            new FacultyDashboard(userID).setVisible(true);
+                        SwingUtilities.invokeLater(() -> {
+                            new FacultyProfilePage(userID).setVisible(true);
                         });
                     } 
                     else if (role.equals("student")) 
