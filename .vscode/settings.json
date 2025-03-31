@@ -2,17 +2,16 @@
     "java.project.referencedLibraries": [
         "lib/**/*.jar",
         "c:\\Program Files (x86)\\MySQL\\Connector J 8.0\\mysql-connector-j-8.0.32.jar",
-        "c:\\Users\\Anuj\\Desktop\\Libraries\\activation.jar",
-        "c:\\Users\\Anuj\\Desktop\\Libraries\\mail.jar",
-        "c:\\Users\\Anuj\\Downloads\\pdfbox-app-2.0.33.jar",
-        "c:\\Users\\Anuj\\Desktop\\Libraries\\iText\\io-7.1.16.jar",
-        "c:\\Users\\Anuj\\Desktop\\Libraries\\iText\\kernel-7.1.16.jar",
-        "c:\\Users\\Anuj\\Desktop\\Libraries\\iText\\layout-7.1.16.jar",
-        "c:\\Users\\Anuj\\Desktop\\Libraries\\iText\\pdfa-7.1.16.jar",
-        "c:\\Users\\Anuj\\Desktop\\Libraries\\jfreechart-1.0.19.jar",
-        "c:\\Users\\Anuj\\Desktop\\Libraries\\jcommon-1.0.16.jar",
-        "c:\\Users\\Anuj\\Desktop\\Libraries\\slf4j-api-1.7.36.jar",
-        "c:\\Users\\Anuj\\Desktop\\Libraries\\slf4j-simple-1.7.36.jar"
-    ],
-    "java.debug.settings.onBuildFailureProceed": true
+        "Required JARs/activation.jar",
+        "Required JARs/io-7.1.16.jar",
+        "Required JARs/jcommon-1.0.16.jar",
+        "Required JARs/jfreechart-1.0.19.jar",
+        "Required JARs/kernel-7.1.16.jar",
+        "Required JARs/layout-7.1.16.jar",
+        "Required JARs/mail.jar",
+        "Required JARs/pdfa-7.1.16.jar",
+        "Required JARs/pdfbox-app-3.0.4.jar",
+        "Required JARs/slf4j-api-1.7.36.jar",
+        "Required JARs/slf4j-simple-1.7.36.jar"
+    ]
 }

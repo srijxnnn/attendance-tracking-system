@@ -69,7 +69,6 @@ CREATE TABLE faculty_courses (
 );
 
 
--- Insert sample students
 INSERT INTO students (user_id, roll, name, reg_no) VALUES
                                                        (1, 'CSE/23101', 'Alice Johnson', '1149'),
                                                        (2, 'CSE/23102', 'Bob Smith', '1150'),
@@ -77,20 +76,7 @@ INSERT INTO students (user_id, roll, name, reg_no) VALUES
                                                        (4, 'CSE/23104', 'David Lee', '1152'),
                                                        (5, 'CSE/23105', 'Emma Watson', '1153');
 
--- Insert random attendance records
-INSERT INTO attendances (student_id, course_id, status) VALUES
-                                                            (1, 1, 'present'),
-                                                            (1, 2, 'absent'),
-                                                            (1, 3, 'present'),
-                                                            (2, 1, 'present'),
-                                                            (2, 2, 'absent'),
-                                                            (3, 3, 'present'),
-                                                            (3, 3, 'present'),
-                                                            (4, 2, 'absent'),
-                                                            (4, 1, 'present'),
-                                                            (5, 3, 'present');
 
--- 4) Insert into COURSES
 INSERT INTO courses (name, code, semester) VALUES
                                      ('Mathematics IV', 'MAC401', 4),
                                      ('Humanities II',  'HUC401', 4),
@@ -98,7 +84,6 @@ INSERT INTO courses (name, code, semester) VALUES
                                      ('Operating Systems', 'CSE302', 3);
 
 
--- 6) Insert into STUDENT_COURSES (which student is enrolled in which course)
 INSERT INTO student_courses (student_id, course_id) VALUES
                                                         (1, 1),
                                                         (1, 2),
@@ -108,7 +93,6 @@ INSERT INTO student_courses (student_id, course_id) VALUES
                                                         (3, 2),
                                                         (3, 4);
 
--- 8) Insert some STUDENT_LEAVES
 INSERT INTO student_leaves (student_id, date, course_id, status, reason) VALUES
                                                                              (1, '2025-03-05', 1, 'pending',  'Medical check-up'),
                                                                              (1, '2025-03-10', 2, 'accepted', 'Family emergency'),
@@ -117,7 +101,6 @@ INSERT INTO student_leaves (student_id, date, course_id, status, reason) VALUES
                                                                              (3, '2025-03-12', 4, 'accepted', 'Attending a conference');
 
 
--- Assigning teachers to courses
 INSERT INTO faculty_courses (faculty_id, course_id) VALUES
                                                         (1, 1),
                                                         (1, 2),
@@ -141,8 +124,6 @@ INSERT INTO users (username, email, password, role) VALUES
                                                         ('charliebrown', 'charlie.brown@example.com', 'pass123', 'student'),
                                                         ('davidlee', 'david.lee@example.com', 'pass123', 'student'),
                                                         ('emmawatson', 'emma.watson@example.com', 'pass123', 'student'),
-
-                                                        -- Faculty (user_id values should correspond to those used in the faculty table)
                                                         ('dr.alicesmith', 'dr.alice@example.com', 'pass123', 'faculty'),
                                                         ('dr.bobjohnson', 'dr.bob@example.com', 'pass123', 'faculty'),
                                                         ('dr.charliebrown', 'dr.charlie@example.com', 'pass123', 'faculty'),
