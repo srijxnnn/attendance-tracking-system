@@ -1,7 +1,7 @@
 package pages.student;
 
+import db.DatabaseConnection;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -9,18 +9,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class StudentStreakFetcher {
-
-    private static final String URL = "jdbc:mysql://localhost:3306/test";
-    private static final String USER = "root";
-    private static final String PASSWORD = "Anuj.k_45";
-
     public static Map<String, Integer> getStudentStreaks(int studentId) {
         Map<String, Integer> streaks = new HashMap<>();
 
         String query = "SELECT a.course_id, a.status FROM attendances a " +
                        "WHERE a.student_id = ? ORDER BY a.course_id, a.date";
 
-        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
+        try (Connection conn = DatabaseConnection.getInstance();
              PreparedStatement stmt = conn.prepareStatement(query)) {
 
             stmt.setInt(1, studentId);
@@ -68,7 +63,7 @@ public class StudentStreakFetcher {
         String courseName = "";
         String query = "SELECT name FROM courses WHERE id = ?";
 
-        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
+        try (Connection conn = DatabaseConnection.getInstance();
              PreparedStatement stmt = conn.prepareStatement(query)) {
 
             stmt.setInt(1, courseId);
