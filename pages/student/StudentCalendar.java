@@ -162,15 +162,15 @@ public class StudentCalendar extends JFrame {
             public void mouseEntered(MouseEvent e) {
                 editLabel.setForeground(Color.WHITE);
             }
-
             @Override
             public void mouseExited(MouseEvent e) {
                 editLabel.setForeground(new Color(200, 200, 200));
             }
-
             @Override
             public void mouseClicked(MouseEvent e) {
-                JOptionPane.showMessageDialog(null, "Edit Profile clicked!");
+                // Instead of showing a simple message, open the StudentEditProfile dialog.
+                // Assuming StudentEditProfile has a constructor that accepts userId:
+                new StudentEditProfile(userId).setVisible(true);
             }
         });
 

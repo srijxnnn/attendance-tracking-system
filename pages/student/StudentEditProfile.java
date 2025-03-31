@@ -1,72 +1,207 @@
 package pages.student;
 
+import db.DatabaseConnection;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.geom.RoundRectangle2D;
+import java.sql.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.plaf.basic.BasicScrollBarUI;
 
-public class StudentEditProfile {
+public class StudentEditProfile extends JFrame {
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            showProfileDialog("Sumanta", "Sumanta Patra", "1150", "CSE/23102", "4", "CSC401, CSC402, CSC403, HUC404, MAC401");
-        });
+    private int userId;
+    // Profile details loaded from DB.
+    private String username;    // from users table
+    private String email;       // from users table
+    private String name;        // from students table
+    private String regdNo;      // from students table
+    private String roll;        // from students table
+    // Students don't have a semester field so it's removed.
+    // Courses: mapping stored via student_courses joined with courses.
+    private String courses;     // comma-separated list of course codes
+
+    // UI Components
+    private JTextField usernameField; // non-editable
+    private JTextField emailField;    // non-editable or editable (depending on your requirements)
+    private JTextField nameField;     // non-editable
+    private JTextField regdField;     // non-editable
+    private JTextField rollField;     // non-editable
+    private JTextArea coursesArea;    // editable (comma separated)
+    private JButton saveButton;
+
+    public StudentEditProfile(int userId) {
+        this.userId = userId;
+        loadUserInfo();      // Loads username and email from users table.
+        loadStudentInfo();   // Loads name, reg_no, roll from students table.
+        loadStudentCourses(); // Loads comma-separated course codes.
+        initUI();
     }
 
     /**
-     * Displays a custom JOptionPane with gradient background,
-     * circular profile placeholder, read-only textfields for name/regd/roll,
-     * and editable textfields for semester & courses, plus a Save button.
+     * Loads username and email from the users table using userId.
      */
-    public static void showProfileDialog(String username, String name, String regdNo, String rollNo,
-                                         String semester, String courses) {
-
-        // Create a custom panel with null layout
-        ProfilePanel panel = new ProfilePanel(username, name, regdNo, rollNo, semester, courses);
-
-        // The JOptionPane doesn't allow direct setting of a custom background easily.
-        // But we can show our custom panel as the "message" content.
-        // We use showOptionDialog to remove the standard buttons.
-        JOptionPane.showOptionDialog(
-                null,
-                panel,
-                "Edit Profile",
-                JOptionPane.DEFAULT_OPTION,
-                JOptionPane.PLAIN_MESSAGE,
-                null,
-                new Object[]{}, // no standard buttons
-                null
-        );
+    private void loadUserInfo() {
+        String query = "SELECT username, email FROM users WHERE id = ?";
+        try (Connection conn = DatabaseConnection.getInstance();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, userId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    username = rs.getString("username");
+                    email = rs.getString("email");
+                }
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
     }
 
     /**
-     * A custom panel for the dialog's content.
-     * Null layout + gradient background + fade-in + hover effect on Save button.
+     * Loads student details from the students table.
+     * Assumes the students table contains: name, reg_no, roll.
      */
-    private static class ProfilePanel extends JPanel {
-        private float alpha = 0f; // for fade-in effect
+    private void loadStudentInfo() {
+        String query = "SELECT name, reg_no, roll FROM students WHERE user_id = ?";
+        try (Connection conn = DatabaseConnection.getInstance();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, userId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    name = rs.getString("name");
+                    regdNo = rs.getString("reg_no");
+                    roll = rs.getString("roll");
+                }
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    /**
+     * Loads the student's course codes from the database and builds a comma-separated string.
+     */
+    private void loadStudentCourses() {
+        String query = "SELECT c.code " +
+                "FROM student_courses sc " +
+                "JOIN courses c ON sc.course_id = c.id " +
+                "WHERE sc.student_id = (SELECT id FROM students WHERE user_id = ?)";
+        StringBuilder sb = new StringBuilder();
+        try (Connection conn = DatabaseConnection.getInstance();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, userId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    if (sb.length() > 0) {
+                        sb.append(", ");
+                    }
+                    sb.append(rs.getString("code"));
+                }
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        courses = sb.toString();
+    }
+
+    /**
+     * Updates the student's profile.
+     * Updates the users table (username, email) and the student_courses mapping based on the coursesArea.
+     */
+    private void updateProfile() {
+        String userQuery = "UPDATE users SET username = ?, email = ? WHERE id = ?";
+        try (Connection conn = DatabaseConnection.getInstance();
+             PreparedStatement psUser = conn.prepareStatement(userQuery)) {
+
+            psUser.setString(1, usernameField.getText().trim());
+            psUser.setString(2, emailField.getText().trim());
+            psUser.setInt(3, userId);
+            int userRows = psUser.executeUpdate();
+
+            if (userRows > 0) {
+                updateStudentCourses(coursesArea.getText().trim());
+                JOptionPane.showMessageDialog(this, "Profile updated successfully!");
+            } else {
+                JOptionPane.showMessageDialog(this, "Profile update failed!");
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    /**
+     * Updates the student_courses mapping.
+     * Deletes existing mappings and inserts new ones based on the comma-separated course codes.
+     */
+    private void updateStudentCourses(String coursesInput) {
+        List<String> courseCodes = Arrays.stream(coursesInput.split(","))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .collect(Collectors.toList());
+        String deleteQuery = "DELETE FROM student_courses WHERE student_id = (SELECT id FROM students WHERE user_id = ?)";
+        String selectCourseQuery = "SELECT id FROM courses WHERE code = ?";
+        String insertQuery = "INSERT INTO student_courses (student_id, course_id) VALUES ((SELECT id FROM students WHERE user_id = ?), ?)";
+        try (Connection conn = DatabaseConnection.getInstance()) {
+            conn.setAutoCommit(false);
+            try (PreparedStatement psDel = conn.prepareStatement(deleteQuery)) {
+                psDel.setInt(1, userId);
+                psDel.executeUpdate();
+            }
+            for (String code : courseCodes) {
+                int courseId = 0;
+                try (PreparedStatement psSel = conn.prepareStatement(selectCourseQuery)) {
+                    psSel.setString(1, code);
+                    try (ResultSet rs = psSel.executeQuery()) {
+                        if (rs.next()) {
+                            courseId = rs.getInt("id");
+                        }
+                    }
+                }
+                if (courseId != 0) {
+                    try (PreparedStatement psIns = conn.prepareStatement(insertQuery)) {
+                        psIns.setInt(1, userId);
+                        psIns.setInt(2, courseId);
+                        psIns.executeUpdate();
+                    }
+                } else {
+                    System.out.println("Course code not found: " + code);
+                }
+            }
+            conn.commit();
+            conn.setAutoCommit(true);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private void initUI() {
+        setTitle("Edit Profile");
+        setSize(600, 300);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setLayout(null);
+
+        ProfilePanel panel = new ProfilePanel();
+        panel.setBounds(0, 0, 600, 300);
+        add(panel);
+    }
+
+    /**
+     * Custom panel for editing the student profile.
+     * Uses a gradient background with a fade-in effect and displays a circular profile placeholder.
+     */
+    private class ProfilePanel extends JPanel {
+        private float alpha = 0f;
         private Timer fadeTimer;
-
-        // Non-editable fields
-        private JTextField usernameField;
-        private JTextField nameField;
-        private JTextField regdField;
-        private JTextField rollField;
-
-        // Editable fields
-        private JTextField semesterField;
-        private JTextArea coursesArea;
-
-        private JButton saveButton;
-
-        public ProfilePanel(String username, String name, String regdNo, String rollNo,
-                            String semester, String courses) {
+        public ProfilePanel() {
             setLayout(null);
-            setPreferredSize(new Dimension(600, 300)); // Adjust as needed
+            setPreferredSize(new Dimension(600, 300));
             setOpaque(false);
 
-            // Start fade-in timer
             fadeTimer = new Timer(20, e -> {
                 alpha += 0.05f;
                 if (alpha >= 1f) {
@@ -77,9 +212,7 @@ public class StudentEditProfile {
             });
             fadeTimer.start();
 
-            // 1) Circular placeholder for profile pic
-            // We'll paint it in paintComponent() or create a sub-panel for it.
-            // Let's just create a small sub-panel for the circle
+            // Circular profile picture placeholder.
             JPanel picPanel = new JPanel() {
                 @Override
                 protected void paintComponent(Graphics g) {
@@ -96,120 +229,102 @@ public class StudentEditProfile {
             picPanel.setOpaque(false);
             add(picPanel);
 
-            // 2) Username label (non-editable)
+            // Non-editable fields.
+            JLabel unameLabel = new JLabel("Username:");
+            unameLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
+            unameLabel.setBounds(150, 20, 80, 20);
+            add(unameLabel);
+
             usernameField = new JTextField(username);
-            usernameField.setBounds(20, 130, 100, 25);
-            usernameField.setFont(new Font("SansSerif", Font.BOLD, 12));
-            usernameField.setHorizontalAlignment(JTextField.CENTER);
+            usernameField.setBounds(230, 20, 120, 25);
             usernameField.setEditable(false);
             add(usernameField);
 
-            // 3) Container for text labels and text fields on the right
-            // We'll just place them directly on this panel for simplicity
-            // Non-editable textfields
+            JLabel emailLabel = new JLabel("Email:");
+            emailLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
+            emailLabel.setBounds(150, 60, 80, 20);
+            add(emailLabel);
+
+            emailField = new JTextField(email);
+            emailField.setBounds(230, 60, 180, 25);
+            add(emailField);
+
             JLabel nameLabel = new JLabel("Name:");
             nameLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
-            nameLabel.setBounds(150, 30, 80, 20);
+            nameLabel.setBounds(150, 100, 80, 20);
             add(nameLabel);
 
             nameField = new JTextField(name);
-            nameField.setBounds(230, 30, 120, 25);
+            nameField.setBounds(230, 100, 120, 25);
             nameField.setEditable(false);
             add(nameField);
 
             JLabel regdLabel = new JLabel("Regd No.:");
             regdLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
-            regdLabel.setBounds(370, 30, 80, 20);
+            regdLabel.setBounds(150, 140, 80, 20);
             add(regdLabel);
 
             regdField = new JTextField(regdNo);
-            regdField.setBounds(450, 30, 120, 25);
+            regdField.setBounds(230, 140, 120, 25);
             regdField.setEditable(false);
             add(regdField);
 
             JLabel rollLabel = new JLabel("Roll No.:");
             rollLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
-            rollLabel.setBounds(150, 70, 80, 20);
+            rollLabel.setBounds(370, 20, 80, 20);
             add(rollLabel);
 
-            rollField = new JTextField(rollNo);
-            rollField.setBounds(230, 70, 120, 25);
+            rollField = new JTextField(roll);
+            rollField.setBounds(450, 20, 120, 25);
             rollField.setEditable(false);
             add(rollField);
 
-            // Editable textfields
-            JLabel semLabel = new JLabel("Semester:");
-            semLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
-            semLabel.setBounds(370, 70, 80, 20);
-            add(semLabel);
-
-            semesterField = new JTextField(semester);
-            semesterField.setBounds(450, 70, 120, 25);
-            add(semesterField);
-
+            // Editable field for courses.
             JLabel coursesLabel = new JLabel("Courses:");
             coursesLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
-            coursesLabel.setBounds(150, 110, 80, 20);
+            coursesLabel.setBounds(150, 180, 80, 20);
             add(coursesLabel);
 
             coursesArea = new JTextArea(courses);
             coursesArea.setLineWrap(true);
             coursesArea.setWrapStyleWord(true);
             JScrollPane scrollPane = new JScrollPane(coursesArea);
-            scrollPane.setBounds(230, 110, 340, 60);
-            // Hide the scroll bar UI to make it minimal
+            scrollPane.setBounds(230, 180, 340, 60);
             scrollPane.getVerticalScrollBar().setUI(new BasicScrollBarUI() {
-                @Override
-                protected void configureScrollBarColors() {}
-                @Override
-                protected JButton createDecreaseButton(int orientation) { return zeroButton(); }
-                @Override
-                protected JButton createIncreaseButton(int orientation) { return zeroButton(); }
+                @Override protected void configureScrollBarColors() {}
+                @Override protected JButton createDecreaseButton(int orientation) { return zeroButton(); }
+                @Override protected JButton createIncreaseButton(int orientation) { return zeroButton(); }
                 private JButton zeroButton() {
                     JButton btn = new JButton();
                     btn.setPreferredSize(new Dimension(0,0));
                     return btn;
                 }
-                @Override
-                protected void paintTrack(Graphics g, JComponent c, Rectangle trackBounds) {}
-                @Override
-                protected void paintThumb(Graphics g, JComponent c, Rectangle thumbBounds) {}
+                @Override protected void paintTrack(Graphics g, JComponent c, Rectangle trackBounds) {}
+                @Override protected void paintThumb(Graphics g, JComponent c, Rectangle thumbBounds) {}
             });
             add(scrollPane);
 
-            // 4) Save button with hover effect
             saveButton = new JButton("SAVE");
-            saveButton.setBounds(360, 190, 80, 30);
+            saveButton.setBounds(360, 250, 80, 30);
             styleButton(saveButton);
             addHoverEffect(saveButton);
             add(saveButton);
 
-            // You could add an ActionListener for "saveButton" to handle saving logic
-            saveButton.addActionListener(e -> {
-                JOptionPane.showMessageDialog(this, "Data Saved!");
-            });
+            saveButton.addActionListener(e -> updateProfile());
         }
 
-        // We override paintComponent to draw a gradient background + fade alpha
         @Override
         protected void paintComponent(Graphics g) {
-            // fade in
             Graphics2D g2d = (Graphics2D) g.create();
             g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
-
-            // gradient
-            GradientPaint gp = new GradientPaint(
-                    0, 0, new Color(44, 62, 80),
-                    getWidth(), getHeight(), new Color(189, 195, 199)
-            );
+            GradientPaint gp = new GradientPaint(0, 0, new Color(44,62,80),
+                    getWidth(), getHeight(), new Color(189,195,199));
             g2d.setPaint(gp);
             g2d.fillRect(0, 0, getWidth(), getHeight());
             g2d.dispose();
-
             super.paintComponent(g);
         }
 
-        // Basic button style
         private void styleButton(JButton btn) {
             btn.setFocusPainted(false);
             btn.setFont(new Font("SansSerif", Font.BOLD, 12));
@@ -218,7 +333,6 @@ public class StudentEditProfile {
             btn.setBorder(new LineBorder(new Color(0,123,255), 2));
         }
 
-        // Hover effect to lighten the button color
         private void addHoverEffect(JButton btn) {
             btn.addMouseListener(new MouseAdapter() {
                 @Override
@@ -234,4 +348,9 @@ public class StudentEditProfile {
             });
         }
     }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new StudentEditProfile(1).setVisible(true));
+    }
 }
+

@@ -148,9 +148,12 @@ public class StudentDashboard extends JFrame {
             }
             @Override
             public void mouseClicked(MouseEvent e) {
-                JOptionPane.showMessageDialog(null, "Edit Profile clicked!");
+                // Instead of showing a simple message, open the StudentEditProfile dialog.
+                // Assuming StudentEditProfile has a constructor that accepts userId:
+                new StudentEditProfile(userId).setVisible(true);
             }
         });
+
 
         userPanel.add(usernameLabel);
         userPanel.add(editLabel);

@@ -213,7 +213,7 @@ public class FacultyDashboard extends JFrame {
             }
             @Override
             public void mouseClicked(MouseEvent e) {
-                JOptionPane.showMessageDialog(null, "Edit Profile clicked!");
+                new FacultyEditProfile(userId).setVisible(true);
             }
         });
         userPanel.add(usernameLabel);
@@ -310,7 +310,7 @@ public class FacultyDashboard extends JFrame {
                 JOptionPane.showMessageDialog(null, optionAttendanceMarkingLabel.getText() + " clicked");
                 SwingUtilities.invokeLater(() ->
                 {
-                    new StudentAttendanceMarkingPage(userId).setVisible(true);
+//                    new StudentAttendanceMarkingPage(userId).setVisible(true);
                 });
             }
         });

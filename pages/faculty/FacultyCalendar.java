@@ -1,10 +1,7 @@
 package pages.faculty;
 
 import db.DatabaseConnection;
-import pages.student.AttendanceReportPage;
-import pages.student.StudentCalendar;
-import pages.student.StudentDashboard;
-import pages.student.StudentLeaveApplicationPage;
+import pages.student.*;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -519,7 +516,7 @@ public class FacultyCalendar extends JFrame {
             }
             @Override
             public void mouseClicked(MouseEvent e) {
-                JOptionPane.showMessageDialog(null, "Edit Profile clicked!");
+                new FacultyEditProfile(userId).setVisible(true);
             }
         });
         userPanel.add(usernameLabel);
@@ -645,7 +642,7 @@ public class FacultyCalendar extends JFrame {
                 JOptionPane.showMessageDialog(null, optionAttendanceMarkingLabel.getText() + " clicked");
                 SwingUtilities.invokeLater(() ->
                 {
-                    new StudentAttendanceMarkingPage(userId).setVisible(true);
+//                    new StudentAttendanceMarkingPage(userId).setVisible(true);
                 });
             }
         });

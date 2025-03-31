@@ -177,7 +177,7 @@ public class FacultyLeaveRequestPermission extends JFrame {
             }
             @Override
             public void mouseClicked(MouseEvent e) {
-                JOptionPane.showMessageDialog(null, "Edit Profile clicked!");
+                new FacultyEditProfile(userId).setVisible(true);
             }
         });
         userPanel.add(editLabel);
@@ -274,7 +274,7 @@ public class FacultyLeaveRequestPermission extends JFrame {
                 JOptionPane.showMessageDialog(null, optionAttendanceMarkingLabel.getText() + " clicked");
                 SwingUtilities.invokeLater(() ->
                 {
-                    new StudentAttendanceMarkingPage(userId).setVisible(true);
+//                    new StudentAttendanceMarkingPage(userId).setVisible(true);
                 });
             }
         });
