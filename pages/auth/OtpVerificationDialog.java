@@ -6,7 +6,7 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.text.*;
 import pages.faculty.FacultyDashboard;
-import pages.student.StudentDashboard;
+import pages.student.ProfileFormPage;
 
 public class OtpVerificationDialog 
 {
@@ -73,7 +73,6 @@ public class OtpVerificationDialog
             });
             fadeTimer.start();
 
-            // Instead of drawing the phone, load the image "mobile.png"
             // Ensure that "mobile.png" is in your resource folder.
             ImageIcon phoneIcon = new ImageIcon(getClass().getResource("isolated-phone-icon-png.png"));
             // Scale the image to fit the desired dimensions (100x170)
@@ -191,10 +190,18 @@ public class OtpVerificationDialog
                 String enteredOtp = sb.toString();
             
                 if (enteredOtp.equals(generatedOTP)) {
+                    int userID;
                     JOptionPane.showMessageDialog(this, "Registered Successfully");
                     RegisterUser registerUser=new RegisterUser();
                     registerUser.register(username, email, password, role);
-                    int userID = registerUser.getUserID();
+                    if(registerUser.login(email, password))
+                    {
+                        userID = registerUser.getUserID();
+                    }
+                    else
+                    {
+                        userID=0;
+                    }
 
                     Window window = SwingUtilities.getWindowAncestor(OtpPanel.this);
                     if (window != null) {
@@ -207,10 +214,11 @@ public class OtpVerificationDialog
                         {
                             new FacultyDashboard(userID).setVisible(true);
                         });
-                    } else if (role.equals("student")) {
-                        SwingUtilities.invokeLater(() ->
-                        {
-                            new StudentDashboard(userID).setVisible(true);
+                    } 
+                    else if (role.equals("student")) 
+                    {
+                        SwingUtilities.invokeLater(() -> {
+                            new ProfileFormPage(userID).setVisible(true);
                         });
                     }
 
