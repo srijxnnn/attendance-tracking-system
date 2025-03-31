@@ -151,7 +151,7 @@ public class StudentLeaveApplicationPage extends JFrame {
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                JOptionPane.showMessageDialog(null, "Edit Profile clicked!");
+                new StudentEditProfile(userId).setVisible(true);
             }
         });
 
@@ -161,32 +161,7 @@ public class StudentLeaveApplicationPage extends JFrame {
 
         // Sidebar Options
         String[] options = {"Dashboard", "Leave Application", "Student Calendar", "Attendance Report"};
-        // for (int i = 0; i < options.length; i++) {
-        //     JLabel optionLabel = new JLabel(options[i], SwingConstants.CENTER);
-        //     optionLabel.setForeground(Color.WHITE);
-        //     optionLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
-        //     optionLabel.setOpaque(true);
-        //     optionLabel.setBackground(new Color(51, 51, 51));
-        //     optionLabel.setBounds(0, 160 + i * 50, 200, 40);
 
-        //     optionLabel.addMouseListener(new MouseAdapter() {
-        //         @Override
-        //         public void mouseEntered(MouseEvent e) {
-        //             optionLabel.setBackground(new Color(70, 70, 70));
-        //         }
-
-        //         @Override
-        //         public void mouseExited(MouseEvent e) {
-        //             optionLabel.setBackground(new Color(51, 51, 51));
-        //         }
-
-        //         @Override
-        //         public void mouseClicked(MouseEvent e) {
-        //             JOptionPane.showMessageDialog(null, optionLabel.getText() + " clicked");
-        //         }
-        //     });
-        //     sidebar.add(optionLabel);
-        // }
         JLabel optionDashboardLabel=new JLabel(options[0], SwingConstants.CENTER);
         optionDashboardLabel.setForeground(Color.WHITE);
         optionDashboardLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
