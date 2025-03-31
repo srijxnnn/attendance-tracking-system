@@ -158,7 +158,7 @@ public class StudentAttendanceMarkingPage extends JFrame
             @Override
             public void mouseClicked(MouseEvent e)
             {
-                JOptionPane.showMessageDialog(null, "Edit Profile clicked!");
+                new FacultyEditProfile(userID).setVisible(true);
             }
         });
         userPanel.add(usernameLabel);
@@ -187,7 +187,6 @@ public class StudentAttendanceMarkingPage extends JFrame
             @Override
             public void mouseClicked(MouseEvent e)
             {
-                JOptionPane.showMessageDialog(null, optionDashboardLabel.getText() + " clicked");
                 SwingUtilities.invokeLater(() ->
                 {
                     new FacultyDashboard(userID).setVisible(true);
@@ -219,7 +218,6 @@ public class StudentAttendanceMarkingPage extends JFrame
             @Override
             public void mouseClicked(MouseEvent e)
             {
-                JOptionPane.showMessageDialog(null, optionLeaveRequestLabel.getText() + " clicked");
                 SwingUtilities.invokeLater(() -> {
                     new FacultyLeaveRequestPermission(userID).setVisible(true);
                 });
@@ -250,7 +248,6 @@ public class StudentAttendanceMarkingPage extends JFrame
             @Override
             public void mouseClicked(MouseEvent e)
             {
-                JOptionPane.showMessageDialog(null, optionMarkAttendanceLabel.getText() + " clicked");
                 SwingUtilities.invokeLater(() ->
                 {
                     new StudentAttendanceMarkingPage(userID).setVisible(true);
@@ -281,7 +278,6 @@ public class StudentAttendanceMarkingPage extends JFrame
             @Override
             public void mouseClicked(MouseEvent e)
             {
-                JOptionPane.showMessageDialog(null, optionStudentAttendanceReportLabel.getText() + " clicked");
                 SwingUtilities.invokeLater(()->
                 {
                     new FacultyCalendar(userID).setVisible(true);

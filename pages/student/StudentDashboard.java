@@ -208,7 +208,6 @@ public class StudentDashboard extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e)
             {
-                JOptionPane.showMessageDialog(null, optionDashboardLabel.getText() + " clicked");
                 SwingUtilities.invokeLater(() ->
                 {
                     new StudentDashboard(userId).setVisible(true);
@@ -240,7 +239,6 @@ public class StudentDashboard extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e)
             {
-                JOptionPane.showMessageDialog(null, optionLeaveApplicationLabel.getText() + " clicked");
                 SwingUtilities.invokeLater(() -> {
                     new StudentLeaveApplicationPage(userId).setVisible(true);
                 });
@@ -271,7 +269,6 @@ public class StudentDashboard extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e)
             {
-                JOptionPane.showMessageDialog(null, optionCalenderLabel.getText() + " clicked");
                 SwingUtilities.invokeLater(() ->
                 {
                     new StudentCalendar(userId).setVisible(true);
@@ -302,7 +299,6 @@ public class StudentDashboard extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e)
             {
-                JOptionPane.showMessageDialog(null, optionStudentAttendanceReportLabel.getText() + " clicked");
                 SwingUtilities.invokeLater(()->
                 {
                     new AttendanceReportPage(userId).setVisible(true);
@@ -326,7 +322,7 @@ public class StudentDashboard extends JFrame {
         logoutButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                JOptionPane.showMessageDialog(null, "Logout clicked");
+
             }
         });
 

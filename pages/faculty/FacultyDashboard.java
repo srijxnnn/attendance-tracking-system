@@ -243,7 +243,6 @@ public class FacultyDashboard extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e)
             {
-                JOptionPane.showMessageDialog(null, optionDashboardLabel.getText() + " clicked");
                 SwingUtilities.invokeLater(() ->
                 {
                     new FacultyDashboard(userId).setVisible(true);
@@ -276,7 +275,6 @@ public class FacultyDashboard extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e)
             {
-                JOptionPane.showMessageDialog(null, optionLeaveRequestPermissionLabel.getText() + " clicked");
                 SwingUtilities.invokeLater(() -> {
                     new FacultyLeaveRequestPermission(userId).setVisible(true);
                 });
@@ -307,10 +305,9 @@ public class FacultyDashboard extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e)
             {
-                JOptionPane.showMessageDialog(null, optionAttendanceMarkingLabel.getText() + " clicked");
                 SwingUtilities.invokeLater(() ->
                 {
-//                    new StudentAttendanceMarkingPage(userId).setVisible(true);
+                    new StudentAttendanceMarkingPage(userId).setVisible(true);
                 });
             }
         });
@@ -338,7 +335,6 @@ public class FacultyDashboard extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e)
             {
-                JOptionPane.showMessageDialog(null, optionStudentAttendanceReportLabel.getText() + " clicked");
                 SwingUtilities.invokeLater(()->
                 {
                     new FacultyCalendar(userId).setVisible(true);

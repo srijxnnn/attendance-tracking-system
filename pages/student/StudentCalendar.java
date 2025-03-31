@@ -168,8 +168,6 @@ public class StudentCalendar extends JFrame {
             }
             @Override
             public void mouseClicked(MouseEvent e) {
-                // Instead of showing a simple message, open the StudentEditProfile dialog.
-                // Assuming StudentEditProfile has a constructor that accepts userId:
                 new StudentEditProfile(userId).setVisible(true);
             }
         });
@@ -201,7 +199,6 @@ public class StudentCalendar extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e)
             {
-                JOptionPane.showMessageDialog(null, optionDashboardLabel.getText() + " clicked");
                 SwingUtilities.invokeLater(() ->
                 {
                     new StudentDashboard(userId).setVisible(true);
@@ -234,7 +231,6 @@ public class StudentCalendar extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e)
             {
-                JOptionPane.showMessageDialog(null, optionLeaveApplicationLabel.getText() + " clicked");
                 SwingUtilities.invokeLater(() -> {
                     new StudentLeaveApplicationPage(userId).setVisible(true);
                 });
@@ -265,7 +261,6 @@ public class StudentCalendar extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e)
             {
-                JOptionPane.showMessageDialog(null, optionCalenderLabel.getText() + " clicked");
                 SwingUtilities.invokeLater(() ->
                 {
                     new StudentCalendar(userId).setVisible(true);
@@ -296,7 +291,6 @@ public class StudentCalendar extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e)
             {
-                JOptionPane.showMessageDialog(null, optionStudentAttendanceReportLabel.getText() + " clicked");
                 SwingUtilities.invokeLater(()->
                 {
                     new AttendanceReportPage(userId).setVisible(true);
