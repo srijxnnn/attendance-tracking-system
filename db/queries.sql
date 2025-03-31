@@ -28,7 +28,8 @@ CREATE TABLE attendances (
 CREATE TABLE courses (
                          id INT AUTO_INCREMENT PRIMARY KEY,
                          name VARCHAR(100) NOT NULL,
-                         code VARCHAR(50) NOT NULL
+                         code VARCHAR(50) NOT NULL,
+                         semester INT NOT NULL
 );
 
 CREATE TABLE student_courses (
@@ -53,7 +54,10 @@ CREATE TABLE student_leaves (
 CREATE TABLE faculty (
                                  id INT AUTO_INCREMENT PRIMARY KEY,
                                  user_id INT NOT NULL,
-                                 name VARCHAR(100) NOT NULL
+                                 name VARCHAR(100) NOT NULL,
+                                 expertise VARCHAR(100) NOT NULL,
+                                 designation VARCHAR(100) NOT NULL,
+                                 last_seen DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE faculty_courses (
@@ -87,11 +91,11 @@ INSERT INTO attendances (student_id, course_id, status) VALUES
                                                             (5, 3, 'present');
 
 -- 4) Insert into COURSES
-INSERT INTO courses (name, code) VALUES
-                                     ('Mathematics IV', 'MAC401'),
-                                     ('Humanities II',  'HUC401'),
-                                     ('Data Structures', 'CSE301'),
-                                     ('Operating Systems', 'CSE302');
+INSERT INTO courses (name, code, semester) VALUES
+                                     ('Mathematics IV', 'MAC401', 4),
+                                     ('Humanities II',  'HUC401', 4),
+                                     ('Data Structures', 'CSE301', 3),
+                                     ('Operating Systems', 'CSE302', 3);
 
 
 -- 6) Insert into STUDENT_COURSES (which student is enrolled in which course)
@@ -123,12 +127,13 @@ INSERT INTO faculty_courses (faculty_id, course_id) VALUES
                                                         (4, 1),
                                                         (4, 3);
 
-INSERT INTO faculty (user_id, name) VALUES
-                                         (6, 'Dr. Alice Smith'),
-                                         (7, 'Dr. Bob Johnson'),
-                                         (8, 'Dr. Charlie Brown'),
-                                         (9, 'Dr. Daniel Williams'),
-                                         (10, 'Dr. Emily Davis');
+INSERT INTO faculty (user_id, name, expertise, designation) VALUES
+                                                                (6, 'Dr. Alice Smith', 'Data Science, Machine Learning', 'Professor'),
+                                                                (7, 'Dr. Bob Johnson', 'Computer Networks, Security', 'Associate Professor'),
+                                                                (8, 'Dr. Charlie Brown', 'Algorithms, Complexity', 'Professor'),
+                                                                (9, 'Dr. Daniel Williams', 'Operating Systems, Distributed Systems', 'Assistant Professor'),
+                                                                (10, 'Dr. Emily Davis', 'Artificial Intelligence, Robotics', 'Professor');
+
 
 INSERT INTO users (username, email, password, role) VALUES
                                                         ('alicejohnson', 'alice.johnson@example.com', 'pass123', 'student'),
