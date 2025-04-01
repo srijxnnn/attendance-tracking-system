@@ -1,8 +1,6 @@
 package pages.student;
 
 import db.DatabaseConnection;
-import pages.auth.UserAuthentication;
-
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.RoundRectangle2D;
@@ -14,6 +12,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicScrollBarUI;
+import pages.auth.UserAuthentication;
 
 public class AttendanceReportPage extends JFrame {
 
@@ -425,7 +424,7 @@ public class AttendanceReportPage extends JFrame {
             new Thread(() -> {
                 try {
                     // Define fixed file name (this will be replaced if it already exists)
-                    String filePath = "C:/Users/Anuj/Desktop/attendance-tracking-system/attendance_report.pdf";
+                    String filePath = "./attendance_report.pdf";
 
                     // Call the updated getReport method to overwrite the file
                     AttendanceReport.getReport(studentId, filePath);
