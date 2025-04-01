@@ -1,6 +1,8 @@
 package pages.faculty;
 
 import db.DatabaseConnection;
+import pages.auth.UserAuthentication;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.RoundRectangle2D;
@@ -74,6 +76,10 @@ public class FacultyLeaveRequestPermission extends JFrame {
                 logoutBtn.setBackground(new Color(33,150,243));
                 logoutBtn.setForeground(Color.WHITE);
             }
+            public void mouseClicked(MouseEvent e) {
+                FacultyLeaveRequestPermission.this.dispose();
+                new UserAuthentication().setVisible(true);
+            }
         });
         headerPanel.add(logoutBtn);
 
@@ -139,15 +145,21 @@ public class FacultyLeaveRequestPermission extends JFrame {
 
         // Create the user panel (shows profile picture and faculty name).
         JPanel userPanel = new JPanel(null) {
+            private Image profileImage;
+
+            {
+                profileImage = new ImageIcon("pages/profile-circle-border.png").getImage();
+            }
+
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 Graphics2D g2 = (Graphics2D) g;
-                g2.setColor(Color.LIGHT_GRAY);
-                int d = 60;
+                int d = 60; // Diameter of the circle.
                 int x = (getWidth() - d) / 2;
                 int y = 20;
-                g2.fillOval(x, y, d, d);
+                // Draw the image scaled to fit within the circle bounds.
+                g2.drawImage(profileImage, x, y, d, d, this);
             }
         };
         userPanel.setBounds(0, 0, 200, 150);
@@ -209,6 +221,7 @@ public class FacultyLeaveRequestPermission extends JFrame {
             {
                 SwingUtilities.invokeLater(() ->
                 {
+                    FacultyLeaveRequestPermission.this.dispose();
                     new FacultyDashboard(userId).setVisible(true);
                     System.out.println(userId);
                 });
@@ -240,6 +253,7 @@ public class FacultyLeaveRequestPermission extends JFrame {
             public void mouseClicked(MouseEvent e)
             {
                 SwingUtilities.invokeLater(() -> {
+                    FacultyLeaveRequestPermission.this.dispose();
                     new FacultyLeaveRequestPermission(userId).setVisible(true);
                 });
 
@@ -271,6 +285,7 @@ public class FacultyLeaveRequestPermission extends JFrame {
             {
                 SwingUtilities.invokeLater(() ->
                 {
+                    FacultyLeaveRequestPermission.this.dispose();
                     new StudentAttendanceMarkingPage(userId).setVisible(true);
                 });
             }
@@ -301,6 +316,7 @@ public class FacultyLeaveRequestPermission extends JFrame {
             {
                 SwingUtilities.invokeLater(()->
                 {
+                    FacultyLeaveRequestPermission.this.dispose();
                     new FacultyCalendar(userId).setVisible(true);
                 });
             }

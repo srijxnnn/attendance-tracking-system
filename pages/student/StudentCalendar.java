@@ -1,6 +1,8 @@
 package pages.student;
 
 import db.DatabaseConnection;
+import pages.auth.UserAuthentication;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
@@ -134,15 +136,21 @@ public class StudentCalendar extends JFrame {
 
         // User Panel on Sidebar
         JPanel userPanel = new JPanel(null) {
+            private Image profileImage;
+
+            {
+                profileImage = new ImageIcon("pages/profile-circle-border.png").getImage();
+            }
+
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 Graphics2D g2 = (Graphics2D) g;
-                g2.setColor(Color.LIGHT_GRAY);
-                int circleDiameter = 60;
-                int x = (getWidth() - circleDiameter) / 2;
+                int d = 60; // Diameter of the circle.
+                int x = (getWidth() - d) / 2;
                 int y = 20;
-                g2.fillOval(x, y, circleDiameter, circleDiameter);
+                // Draw the image scaled to fit within the circle bounds.
+                g2.drawImage(profileImage, x, y, d, d, this);
             }
         };
         userPanel.setBounds(0, 0, 200, 150);
@@ -201,6 +209,7 @@ public class StudentCalendar extends JFrame {
             {
                 SwingUtilities.invokeLater(() ->
                 {
+                    StudentCalendar.this.dispose();
                     new StudentDashboard(userId).setVisible(true);
                     System.out.println(userId);
                 });
@@ -232,6 +241,7 @@ public class StudentCalendar extends JFrame {
             public void mouseClicked(MouseEvent e)
             {
                 SwingUtilities.invokeLater(() -> {
+                    StudentCalendar.this.dispose();
                     new StudentLeaveApplicationPage(userId).setVisible(true);
                 });
 
@@ -263,6 +273,7 @@ public class StudentCalendar extends JFrame {
             {
                 SwingUtilities.invokeLater(() ->
                 {
+                    StudentCalendar.this.dispose();
                     new StudentCalendar(userId).setVisible(true);
                 });
             }
@@ -293,6 +304,7 @@ public class StudentCalendar extends JFrame {
             {
                 SwingUtilities.invokeLater(()->
                 {
+                    StudentCalendar.this.dispose();
                     new AttendanceReportPage(userId).setVisible(true);
                 });
             }
@@ -328,6 +340,12 @@ public class StudentCalendar extends JFrame {
         topPanel.add(subjectCombo);
 
         JButton logoutBtn = new JButton("LOGOUT");
+        logoutBtn.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                StudentCalendar.this.dispose();
+                new UserAuthentication().setVisible(true);
+            }
+        });
         logoutBtn.setBounds(620, 10, 100, 30);
         topPanel.add(logoutBtn);
 

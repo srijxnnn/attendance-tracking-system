@@ -224,15 +224,17 @@ public class FacultyEditProfile extends JFrame {
 
             // Circular placeholder for profile picture.
             JPanel picPanel = new JPanel() {
+                private Image profileImage = new ImageIcon("pages/profile-circle-border.png").getImage();
+
                 @Override
                 protected void paintComponent(Graphics g) {
                     super.paintComponent(g);
                     Graphics2D g2 = (Graphics2D) g;
-                    g2.setColor(Color.LIGHT_GRAY);
-                    int d = Math.min(getWidth(), getHeight()) - 10;
+                    int d = Math.min(getWidth(), getHeight()) - 10; // Diameter of the circle.
                     int x = (getWidth() - d) / 2;
                     int y = (getHeight() - d) / 2;
-                    g2.fillOval(x, y, d, d);
+                    // Draw the image scaled to fit within the circle bounds.
+                    g2.drawImage(profileImage, x, y, d, d, this);
                 }
             };
             picPanel.setBounds(20, 20, 100, 100);

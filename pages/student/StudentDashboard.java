@@ -1,6 +1,8 @@
 package pages.student;
 
 import db.DatabaseConnection;
+import pages.auth.UserAuthentication;
+
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -113,15 +115,21 @@ public class StudentDashboard extends JFrame {
         sidebar.setBounds(0, 0, 200, getHeight());
 
         JPanel userPanel = new JPanel(null) {
+            private Image profileImage;
+
+            {
+                profileImage = new ImageIcon("pages/profile-circle-border.png").getImage();
+            }
+
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 Graphics2D g2 = (Graphics2D) g;
-                g2.setColor(Color.LIGHT_GRAY);
-                int circleDiameter = 60;
-                int x = (getWidth() - circleDiameter) / 2;
+                int d = 60; // Diameter of the circle.
+                int x = (getWidth() - d) / 2;
                 int y = 20;
-                g2.fillOval(x, y, circleDiameter, circleDiameter);
+                // Draw the image scaled to fit within the circle bounds.
+                g2.drawImage(profileImage, x, y, d, d, this);
             }
         };
         userPanel.setBounds(0, 0, 200, 150);
@@ -161,30 +169,6 @@ public class StudentDashboard extends JFrame {
         sidebar.add(userPanel);
 
         String[] options = {"Dashboard", "Leave Application", "Student Calendar", "Attendance Report"};
-//        for (int i = 0; i < options.length; i++) {
-//            JLabel optionLabel = new JLabel(options[i], SwingConstants.CENTER);
-//            optionLabel.setForeground(Color.WHITE);
-//            optionLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
-//            optionLabel.setOpaque(true);
-//            optionLabel.setBackground(new Color(51, 51, 51));
-//            optionLabel.setBounds(0, 160 + i * 50, 200, 40);
-//
-//            optionLabel.addMouseListener(new MouseAdapter() {
-//                @Override
-//                public void mouseEntered(MouseEvent e) {
-//                    optionLabel.setBackground(new Color(70, 70, 70));
-//                }
-//                @Override
-//                public void mouseExited(MouseEvent e) {
-//                    optionLabel.setBackground(new Color(51, 51, 51));
-//                }
-//                @Override
-//                public void mouseClicked(MouseEvent e) {
-//                    JOptionPane.showMessageDialog(null, optionLabel.getText() + " clicked");
-//                }
-//            });
-//            sidebar.add(optionLabel);
-//        }
 
         JLabel optionDashboardLabel=new JLabel(options[0], SwingConstants.CENTER);
         optionDashboardLabel.setForeground(Color.WHITE);
@@ -210,6 +194,7 @@ public class StudentDashboard extends JFrame {
             {
                 SwingUtilities.invokeLater(() ->
                 {
+                    StudentDashboard.this.dispose();
                     new StudentDashboard(userId).setVisible(true);
                 });
 
@@ -240,6 +225,7 @@ public class StudentDashboard extends JFrame {
             public void mouseClicked(MouseEvent e)
             {
                 SwingUtilities.invokeLater(() -> {
+                    StudentDashboard.this.dispose();
                     new StudentLeaveApplicationPage(userId).setVisible(true);
                 });
 
@@ -271,6 +257,7 @@ public class StudentDashboard extends JFrame {
             {
                 SwingUtilities.invokeLater(() ->
                 {
+                    StudentDashboard.this.dispose();
                     new StudentCalendar(userId).setVisible(true);
                 });
             }
@@ -301,6 +288,7 @@ public class StudentDashboard extends JFrame {
             {
                 SwingUtilities.invokeLater(()->
                 {
+                    StudentDashboard.this.dispose();
                     new AttendanceReportPage(userId).setVisible(true);
                 });
             }
@@ -320,9 +308,9 @@ public class StudentDashboard extends JFrame {
         logoutButton.setFocusable(false);
         logoutButton.setBounds(650, 5, 100, 30);
         logoutButton.addMouseListener(new MouseAdapter() {
-            @Override
             public void mouseClicked(MouseEvent e) {
-
+                StudentDashboard.this.dispose();
+                new UserAuthentication().setVisible(true);
             }
         });
 

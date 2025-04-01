@@ -1,6 +1,8 @@
 package pages.faculty;
  
  import db.DatabaseConnection;
+ import pages.auth.UserAuthentication;
+
  import java.awt.*;
  import java.awt.event.*;
  import java.awt.geom.RoundRectangle2D;
@@ -234,16 +236,21 @@ package pages.faculty;
         sidebar.setBackground(new Color(51, 51, 51));
 
         JPanel userPanel = new JPanel(null) {
+            private Image profileImage;
+
+            {
+                profileImage = new ImageIcon("pages/profile-circle-border.png").getImage();
+            }
+
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 Graphics2D g2 = (Graphics2D) g;
-                g2.setColor(Color.LIGHT_GRAY);
-
-                int d = 60;
+                int d = 60; // Diameter of the circle.
                 int x = (getWidth() - d) / 2;
                 int y = 20;
-                g2.fillOval(x, y, d, d);
+                // Draw the image scaled to fit within the circle bounds.
+                g2.drawImage(profileImage, x, y, d, d, this);
             }
         };
         userPanel.setBounds(0, 0, 200, 150);
@@ -275,7 +282,7 @@ package pages.faculty;
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                JOptionPane.showMessageDialog(null, "Edit Profile clicked!");
+                SwingUtilities.invokeLater(() -> new FacultyEditProfile(userID).setVisible(true));
             }
         });
         userPanel.add(usernameLabel);
@@ -305,7 +312,7 @@ package pages.faculty;
             @Override
             public void mouseClicked(MouseEvent e) 
             {
-                JOptionPane.showMessageDialog(null, optionDashboardLabel.getText() + " clicked");
+                StudentAttendanceMarkingPage.this.dispose();
                 SwingUtilities.invokeLater(() -> new FacultyDashboard(userID).setVisible(true));
             }
         });
@@ -331,7 +338,7 @@ package pages.faculty;
             @Override
             public void mouseClicked(MouseEvent e) 
             {
-                JOptionPane.showMessageDialog(null, optionLeaveRequestLabel.getText() + " clicked");
+                StudentAttendanceMarkingPage.this.dispose();
                 SwingUtilities.invokeLater(() -> new FacultyLeaveRequestPermission(userID).setVisible(true));
             }
         });
@@ -358,7 +365,7 @@ package pages.faculty;
             @Override
             public void mouseClicked(MouseEvent e) 
             {
-                JOptionPane.showMessageDialog(null, optionMarkAttendanceLabel.getText() + " clicked");
+                StudentAttendanceMarkingPage.this.dispose();
                 SwingUtilities.invokeLater(() -> new StudentAttendanceMarkingPage(userID).setVisible(true));
             }
         });
@@ -384,7 +391,7 @@ package pages.faculty;
             @Override
             public void mouseClicked(MouseEvent e) 
             {
-                JOptionPane.showMessageDialog(null, optionStudentAttendanceReportLabel.getText() + " clicked");
+                StudentAttendanceMarkingPage.this.dispose();
                 SwingUtilities.invokeLater(() -> new FacultyCalendar(userID).setVisible(true));
             }
         });
@@ -464,6 +471,12 @@ package pages.faculty;
         subjectCombo.addActionListener(selectionListener);
 
         JButton logoutBtn = new JButton("LOGOUT");
+        logoutBtn.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                StudentAttendanceMarkingPage.this.dispose();
+                new UserAuthentication().setVisible(true);
+            }
+        });
         logoutBtn.setBounds(600, 10, 100, 30);
         styleHeaderButton(logoutBtn);
         addButtonHoverGradient(logoutBtn);

@@ -1,6 +1,7 @@
 package pages.faculty;
 
 import db.DatabaseConnection;
+import pages.auth.UserAuthentication;
 import pages.student.*;
 
 import java.awt.*;
@@ -481,15 +482,21 @@ public class FacultyCalendar extends JFrame {
         sidebar.setBackground(new Color(51, 51, 51));
 
         JPanel userPanel = new JPanel(null) {
+            private Image profileImage;
+
+            {
+                profileImage = new ImageIcon("pages/profile-circle-border.png").getImage();
+            }
+
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 Graphics2D g2 = (Graphics2D) g;
-                g2.setColor(Color.LIGHT_GRAY);
-                int d = 60;
+                int d = 60; // Diameter of the circle.
                 int x = (getWidth() - d) / 2;
                 int y = 20;
-                g2.fillOval(x, y, d, d);
+                // Draw the image scaled to fit within the circle bounds.
+                g2.drawImage(profileImage, x, y, d, d, this);
             }
         };
         userPanel.setBounds(0, 0, 200, 150);
@@ -548,6 +555,7 @@ public class FacultyCalendar extends JFrame {
             {
                 SwingUtilities.invokeLater(() ->
                 {
+                    FacultyCalendar.this.dispose();
                     new FacultyDashboard(userId).setVisible(true);
                     System.out.println(userId);
                 });
@@ -579,6 +587,7 @@ public class FacultyCalendar extends JFrame {
             public void mouseClicked(MouseEvent e)
             {
                 SwingUtilities.invokeLater(() -> {
+                    FacultyCalendar.this.dispose();
                     new FacultyLeaveRequestPermission(userId).setVisible(true);
                 });
 
@@ -610,6 +619,7 @@ public class FacultyCalendar extends JFrame {
             {
                 SwingUtilities.invokeLater(() ->
                 {
+                    FacultyCalendar.this.dispose();
                     new StudentAttendanceMarkingPage(userId).setVisible(true);
                 });
             }
@@ -640,6 +650,7 @@ public class FacultyCalendar extends JFrame {
             {
                 SwingUtilities.invokeLater(()->
                 {
+                    FacultyCalendar.this.dispose();
                     new FacultyCalendar(userId).setVisible(true);
                 });
             }
@@ -683,6 +694,11 @@ public class FacultyCalendar extends JFrame {
             public void mouseExited(MouseEvent e) {
                 logoutBtn.setBackground(new Color(0, 123, 255));
             }
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                FacultyCalendar.this.dispose();
+                new UserAuthentication().setVisible(true);
+            }
         });
         headerPanel.add(logoutBtn);
 
@@ -712,7 +728,7 @@ public class FacultyCalendar extends JFrame {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            new FacultyCalendar(1).setVisible(true);
+            new FacultyCalendar(6).setVisible(true);
         });
     }
 }
