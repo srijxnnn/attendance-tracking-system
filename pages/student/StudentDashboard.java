@@ -1,8 +1,6 @@
 package pages.student;
 
 import db.DatabaseConnection;
-import pages.auth.UserAuthentication;
-
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -14,6 +12,7 @@ import java.sql.SQLException;
 import java.util.*;
 import javax.swing.*;
 import javax.swing.Timer;
+import pages.auth.UserAuthentication;
 
 
 public class StudentDashboard extends JFrame {
@@ -125,10 +124,9 @@ public class StudentDashboard extends JFrame {
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 Graphics2D g2 = (Graphics2D) g;
-                int d = 60; // Diameter of the circle.
+                int d = 60; 
                 int x = (getWidth() - d) / 2;
                 int y = 20;
-                // Draw the image scaled to fit within the circle bounds.
                 g2.drawImage(profileImage, x, y, d, d, this);
             }
         };
@@ -156,8 +154,6 @@ public class StudentDashboard extends JFrame {
             }
             @Override
             public void mouseClicked(MouseEvent e) {
-                // Instead of showing a simple message, open the StudentEditProfile dialog.
-                // Assuming StudentEditProfile has a constructor that accepts userId:
                 new StudentEditProfile(userId).setVisible(true);
             }
         });
@@ -435,19 +431,17 @@ public class StudentDashboard extends JFrame {
             JPanel streakItem = new JPanel();
             streakItem.setLayout(new BorderLayout());
             streakItem.setBackground(new Color(255, 255, 255, 100));
-            streakItem.setBounds(0, 0, 200, 70); // Increase width from 400 to 500
+            streakItem.setBounds(0, 0, 200, 70); 
             streakItem.setPreferredSize(new Dimension(200, 70));
             streakItem.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2, true));
             streakItem.setBorder(BorderFactory.createCompoundBorder(
                 streakItem.getBorder(),
-                BorderFactory.createEmptyBorder(10, 10, 10, 10)  // Add padding for better effect
+                BorderFactory.createEmptyBorder(10, 10, 10, 10)  
             ));
             
-            // Set rounded corners for the streak item
             streakItem.setBorder(BorderFactory.createLineBorder(new Color(0, 0, 0, 100), 4, true));
 
-            // Load the GIF using ImageIcon for animation
-            String gifPath = "./pages/student/fire.png";  // Replace with the correct path
+            String gifPath = "./pages/student/fire.png";  
             File gifFile = new File(gifPath);
 
             if (gifFile.exists()) {
@@ -456,43 +450,33 @@ public class StudentDashboard extends JFrame {
                 System.out.println("GIF not found: " + gifPath);
             }
 
-            // Create the ImageIcon directly
             ImageIcon fireGif = new ImageIcon(gifPath);
             Image image = fireGif.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
             ImageIcon resizedIcon = new ImageIcon(image);
-            // Create a JLabel to hold the GIF and ensure it is animated
             JLabel gifLabel = new JLabel(resizedIcon);
-            gifLabel.setPreferredSize(new Dimension(70, 10));  // Adjust the size to fit better
+            gifLabel.setPreferredSize(new Dimension(70, 10));
 
-            // Wrap the JLabel in a JPanel for proper placement
+            
             JPanel gifPanel = new JPanel();
-            gifPanel.setLayout(new BorderLayout());  // FlowLayout or BorderLayout can be used
-            gifPanel.setOpaque(false);  // Transparent background
-            gifPanel.add(gifLabel, BorderLayout.WEST);  // Add GIF to center
-            gifPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));  // Adds 20px padding on the left
+            gifPanel.setLayout(new BorderLayout());  
+            gifPanel.setOpaque(false);
+            gifPanel.add(gifLabel, BorderLayout.WEST); 
+            gifPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));  
 
-            // Add the gifPanel to the streakItem panel (west side)
             streakItem.add(gifPanel, BorderLayout.WEST);
             
-            // Create a JLabel for the streak text
-            JLabel streakLabel = new JLabel(subjects.get(i) + " Streak: " + streaks.get(i) + " days", JLabel.CENTER);
+            JLabel streakLabel = new JLabel(subjects.get(i) +" "+ streaks.get(i) + " days", JLabel.CENTER);
             streakLabel.setFont(new Font("Calibri", Font.BOLD, 18));
             streakLabel.setForeground(Color.DARK_GRAY);
 
-            // Add the streak label to the center of the streakItem panel
             streakItem.add(streakLabel, BorderLayout.CENTER);
 
-            // Add the streak item to the main streaks panel
             streaksPanel.add(streakItem);
         }
 
         
-        
-        // Add streaksPanel to the background panel
         backgroundPanel.add(streaksPanel);
 
-
-        // Adding to Parent Panel
         statsPanel.add(barChartPanel);
         statsPanel.add(streaksPanel);
         backgroundPanel.add(sidebar);
@@ -503,7 +487,6 @@ public class StudentDashboard extends JFrame {
 
         add(backgroundPanel);
 
-        // Timer for circular progress animation
         Timer timer = new Timer(10, e -> {
             if (progress < attendancePercentage) {
                 progress++;

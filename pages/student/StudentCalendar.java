@@ -1,8 +1,6 @@
 package pages.student;
 
 import db.DatabaseConnection;
-import pages.auth.UserAuthentication;
-
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
@@ -10,25 +8,19 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.*;
+import pages.auth.UserAuthentication;
 
 public class StudentCalendar extends JFrame {
 
-    private final String[] options = {
-            "Dashboard", "Leave Application", "Student Calendar", "Attendance Report"
-    };
+    private final String[] options = {"Dashboard", "Leave Application", "Student Calendar", "Attendance Report"};
 
-    // We'll load the student's courses from DB rather than hard-coding them
-    // We'll store (courseCode -> courseId) for easy lookup:
     private Map<String, Integer> courseMap = new HashMap<>();
-
-    // For the month & year combos:
     private final String[] months = {
             "January", "February", "March", "April", "May", "June",
             "July", "August", "September", "October", "November", "December"
     };
     private final String[] years = {"2022", "2023", "2024", "2025", "2026"};
 
-    // UI components
     private JPanel calendarPanel;
     private JLabel totalWorkingDaysLabel;
     private JLabel presentLabel;
@@ -38,28 +30,24 @@ public class StudentCalendar extends JFrame {
     private JComboBox<String> yearCombo;
     private JComboBox<String> subjectCombo;
 
-    // Attendance counters
     private int presentCount, absentCount, unmarkedCount;
 
     // For the circular progress
-    private int attendancePercentage = 0; // Will compute from DB data
+    private int attendancePercentage = 0; 
     private int progress = 0;
 
     // Student info
     private int userId;
     private int studentId;
-    private String studentName = "Unknown"; // Will load from DB
+    private String studentName = "Unknown"; 
 
     public StudentCalendar(int userId) {
         this.userId = userId;
-        loadStudentInfo();     // Load student name + courses
+        loadStudentInfo();     
         initUI();
-        rebuildCalendar();     // Build initial calendar display
+        rebuildCalendar();   
     }
 
-    /**
-     * Loads the student's name and courses from the database.
-     */
     private void loadStudentInfo() {
         try (Connection conn = DatabaseConnection.getInstance()) {
             String studentIdQuery = "SELECT * FROM students WHERE user_id = ?";
@@ -72,7 +60,6 @@ public class StudentCalendar extends JFrame {
                 }
             }
 
-            // 1) Load the student's name
             String infoQuery = "SELECT name FROM students WHERE id = ?";
             try (PreparedStatement ps = conn.prepareStatement(infoQuery)) {
                 ps.setInt(1, studentId);
@@ -83,7 +70,6 @@ public class StudentCalendar extends JFrame {
                 }
             }
 
-            // 2) Load the student's courses (id + code)
             String courseQuery =
                     "SELECT c.id, c.code " +
                             "FROM courses c " +
@@ -146,10 +132,9 @@ public class StudentCalendar extends JFrame {
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 Graphics2D g2 = (Graphics2D) g;
-                int d = 60; // Diameter of the circle.
+                int d = 60;
                 int x = (getWidth() - d) / 2;
                 int y = 20;
-                // Draw the image scaled to fit within the circle bounds.
                 g2.drawImage(profileImage, x, y, d, d, this);
             }
         };
@@ -312,30 +297,29 @@ public class StudentCalendar extends JFrame {
         sidebar.add(optionStudentAttendanceReportLabel);
 
         // Top panel
-        JPanel topPanel = new JPanel(null);
+        JPanel topPanel=new JPanel(null);
         topPanel.setBounds(210, 20, 760, 50);
         topPanel.setBackground(new Color(255, 255, 255, 80));
         backgroundPanel.add(topPanel);
 
-        monthCombo = new JComboBox<>(months);
+        monthCombo=new JComboBox<>(months);
         monthCombo.setBounds(20, 10, 120, 30);
-        monthCombo.setSelectedIndex(LocalDate.now().getMonthValue() - 1); // current month
+        monthCombo.setSelectedIndex(LocalDate.now().getMonthValue() - 1); 
         topPanel.add(monthCombo);
 
-        yearCombo = new JComboBox<>(years);
+        yearCombo=new JComboBox<>(years);
         yearCombo.setBounds(160, 10, 100, 30);
-        // Set default to something close to current year:
-        int currentYear = LocalDate.now().getYear();
-        for (int i = 0; i < years.length; i++) {
-            if (String.valueOf(currentYear).equals(years[i])) {
+        int currentYear=LocalDate.now().getYear();
+        for(int i=0;i<years.length;i++) {
+            if(String.valueOf(currentYear).equals(years[i])) 
+            {
                 yearCombo.setSelectedIndex(i);
                 break;
             }
         }
         topPanel.add(yearCombo);
 
-        // Subject combo from DB courses
-        subjectCombo = new JComboBox<>(courseMap.keySet().toArray(new String[0]));
+        subjectCombo=new JComboBox<>(courseMap.keySet().toArray(new String[0]));
         subjectCombo.setBounds(280, 10, 120, 30);
         topPanel.add(subjectCombo);
 
@@ -374,15 +358,14 @@ public class StudentCalendar extends JFrame {
                 g2.drawOval(10, 10, 120, 120);
 
                 g2.setColor(new Color(46, 204, 113));
-                // Draw arc based on "progress" (0..attendancePercentage)
                 g2.drawArc(10, 10, 120, 120, 90, progress * 360 / 100);
 
                 g2.setFont(new Font("SansSerif", Font.BOLD, 16));
-                String text = progress + "%";
-                FontMetrics fm = g2.getFontMetrics();
-                int textWidth = fm.stringWidth(text);
-                int x = (getWidth() - textWidth) / 2;
-                int y = getHeight() / 2 + fm.getHeight() / 4;
+                String text=progress+"%";
+                FontMetrics fm=g2.getFontMetrics();
+                int textWidth=fm.stringWidth(text);
+                int x=(getWidth()-textWidth)/2;
+                int y=getHeight()/2+fm.getHeight()/4;
                 g2.drawString(text, x, y);
             }
         };
@@ -390,7 +373,6 @@ public class StudentCalendar extends JFrame {
         progressPanel.setOpaque(false);
         backgroundPanel.add(progressPanel);
 
-        // Label "ATTENDANCE PERCENTAGE"
         JPanel attPercentPanel = new JPanel(null);
         attPercentPanel.setBackground(new Color(255, 255, 255, 80));
         attPercentPanel.setBounds(730, 270, 180, 40);
@@ -431,131 +413,120 @@ public class StudentCalendar extends JFrame {
         absentLabel.setBounds(500, 20, 150, 30);
         bottomPanel.add(absentLabel);
 
-        // Listeners to rebuild calendar when month/year/subject changes
         monthCombo.addActionListener(e -> rebuildCalendar());
         yearCombo.addActionListener(e -> rebuildCalendar());
         subjectCombo.addActionListener(e -> rebuildCalendar());
     }
 
-    /**
-     * Called whenever the user changes month, year, or subject.
-     */
+
     private void rebuildCalendar() {
-        // Clear old day labels
         calendarPanel.removeAll();
 
-        // Build the new calendar display
         buildDynamicCalendar();
 
-        // Recompute the attendance percentage & animate the progress arc
         animateAttendanceArc();
 
-        // Refresh UI
         calendarPanel.revalidate();
         calendarPanel.repaint();
     }
 
-    /**
-     * Builds the day headers + day squares using real attendance data from DB.
-     */
-    private void buildDynamicCalendar() {
-        // 1) figure out which month/year/course is selected
-        int selectedMonth = monthCombo.getSelectedIndex() + 1;
-        int selectedYear = Integer.parseInt(yearCombo.getSelectedItem().toString());
 
-        String selectedCourseCode = (String) subjectCombo.getSelectedItem();
-        if (selectedCourseCode == null) return; // no course selected
+    private void buildDynamicCalendar() 
+    {
+        int selectedMonth=monthCombo.getSelectedIndex() + 1;
+        int selectedYear=Integer.parseInt(yearCombo.getSelectedItem().toString());
 
-        int courseId = courseMap.get(selectedCourseCode);
+        String selectedCourseCode=(String) subjectCombo.getSelectedItem();
+        if(selectedCourseCode==null) return;
 
-        // 2) fetch attendance data for that month/year/course from DB
-        Map<Integer, String> attendanceMap = fetchAttendanceMap(studentId, courseId, selectedYear, selectedMonth);
+        int courseId=courseMap.get(selectedCourseCode);
 
-        // 3) day headers (Mon..Sun)
+        Map<Integer, String> attendanceMap=fetchAttendanceMap(studentId, courseId, selectedYear, selectedMonth);
+
         createDayHeaders();
 
-        LocalDate firstDayOfMonth = LocalDate.of(selectedYear, selectedMonth, 1);
-        int daysInMonth = firstDayOfMonth.lengthOfMonth();
+        LocalDate firstDayOfMonth=LocalDate.of(selectedYear, selectedMonth, 1);
+        int daysInMonth=firstDayOfMonth.lengthOfMonth();
 
-        // dayOfWeek in Java: Monday=1 .. Sunday=7
-        int startDayOfWeek = firstDayOfMonth.getDayOfWeek().getValue();
-        // We'll place day 1 at row=1, col=(startDayOfWeek-1)
-        int row = 1;
-        int col = startDayOfWeek - 1;
+        int startDayOfWeek=firstDayOfMonth.getDayOfWeek().getValue();
+        int row=1;
+        int col=startDayOfWeek-1;
 
-        // Reset counters
-        presentCount = 0;
-        absentCount = 0;
-        unmarkedCount = 0;
 
-        // 4) Build day squares
-        for (int day = 1; day <= daysInMonth; day++) {
-            JLabel dayLabel = new JLabel(String.valueOf(day), SwingConstants.CENTER);
+        presentCount=0;
+        absentCount=0;
+        unmarkedCount=0;
+
+        for (int day=1;day<=daysInMonth;day++) 
+        {
+            JLabel dayLabel=new JLabel(String.valueOf(day), SwingConstants.CENTER);
             dayLabel.setOpaque(true);
             dayLabel.setFont(new Font("SansSerif", Font.BOLD, 12));
 
-            // Check if we have attendance for this day
-            String status = attendanceMap.get(day); // "present" or "absent" or null
+            String status=attendanceMap.get(day); 
 
-            // Sunday (col=6) - you might handle differently if you want Sunday off, etc.
-            if (col == 6) {
-                // Mark Sunday differently if desired
+            if(col==6) 
+            {
                 dayLabel.setBackground(Color.BLACK);
                 dayLabel.setForeground(Color.WHITE);
-            } else {
-                if ("present".equalsIgnoreCase(status)) {
+            } 
+            else 
+            {
+                if ("present".equalsIgnoreCase(status)) 
+                {
                     dayLabel.setBackground(Color.GREEN);
                     presentCount++;
-                } else if ("absent".equalsIgnoreCase(status)) {
+                } 
+                else if("absent".equalsIgnoreCase(status)) 
+                {
                     dayLabel.setBackground(Color.RED);
                     absentCount++;
-                } else {
-                    // No record for that day => unmarked
+                } 
+                else 
+                {
                     dayLabel.setBackground(Color.BLACK);
                     dayLabel.setForeground(Color.WHITE);
                     unmarkedCount++;
                 }
             }
 
-            dayLabel.addMouseListener(new MouseAdapter() {
+            dayLabel.addMouseListener(new MouseAdapter() 
+            {
                 @Override
-                public void mouseEntered(MouseEvent e) {
+                public void mouseEntered(MouseEvent e) 
+                {
                     dayLabel.setBorder(BorderFactory.createLineBorder(Color.WHITE, 2));
                 }
 
                 @Override
-                public void mouseExited(MouseEvent e) {
+                public void mouseExited(MouseEvent e) 
+                {
                     dayLabel.setBorder(null);
                 }
             });
 
-            // Positioning in the panel
-            int xStart = 20, yStart = 20;
-            int cellWidth = 50, cellHeight = 40;
-            int spacingX = 10, spacingY = 10;
+            int xStart=20, yStart=20;
+            int cellWidth=50, cellHeight=40;
+            int spacingX=10, spacingY=10;
 
-            int x = xStart + col * (cellWidth + spacingX);
-            int y = yStart + row * (cellHeight + spacingY);
+            int x=xStart+col*(cellWidth+spacingX);
+            int y=yStart+row*(cellHeight+spacingY);
 
             dayLabel.setBounds(x, y, cellWidth, cellHeight);
             calendarPanel.add(dayLabel);
 
             col++;
-            if (col == 7) {
-                col = 0;
+            if(col==7) 
+            {
+                col=0;
                 row++;
             }
         }
-
-        // 5) Update the bottom panel counts
         updateBottomPanel();
     }
 
-    /**
-     * Queries the attendance table for all records in the given month/year
-     * for the given student & course. Returns a map of (day -> "present"/"absent").
-     */
-    private Map<Integer, String> fetchAttendanceMap(int studentId, int courseId, int year, int month) {
+    private Map<Integer, String> fetchAttendanceMap(int studentId, int courseId, int year, int month) 
+    {
         Map<Integer, String> map = new HashMap<>();
         String query = "SELECT DAY(date) AS dayNum, status " +
                 "FROM attendances " +
@@ -570,10 +541,12 @@ public class StudentCalendar extends JFrame {
             ps.setInt(3, year);
             ps.setInt(4, month);
 
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    int day = rs.getInt("dayNum");
-                    String status = rs.getString("status"); // "present" or "absent"
+            try(ResultSet rs=ps.executeQuery()) 
+            {
+                while(rs.next()) 
+                {
+                    int day=rs.getInt("dayNum");
+                    String status=rs.getString("status");
                     map.put(day, status);
                 }
             }
@@ -583,28 +556,28 @@ public class StudentCalendar extends JFrame {
         return map;
     }
 
-    /**
-     * Creates the weekday header row (MON..SUN).
-     */
-    private void createDayHeaders() {
-        String[] dayNames = {"MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"};
+    private void createDayHeaders() 
+    {
+        String[] dayNames={"MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"};
 
-        int xStart = 20, yStart = 20;
-        int cellWidth = 50, cellHeight = 40;
-        int spacingX = 10;
+        int xStart=20, yStart=20;
+        int cellWidth=50, cellHeight=40;
+        int spacingX=10;
 
-        for (int col = 0; col < 7; col++) {
-            JLabel headerLabel = new JLabel(dayNames[col], SwingConstants.CENTER);
+        for(int col=0;col<7;col++) 
+        {
+            JLabel headerLabel=new JLabel(dayNames[col], SwingConstants.CENTER);
             headerLabel.setOpaque(true);
             headerLabel.setFont(new Font("SansSerif", Font.BOLD, 12));
             headerLabel.setBackground(new Color(230, 230, 230));
             headerLabel.setBounds(
-                    xStart + col * (cellWidth + spacingX),
+                    xStart+col*(cellWidth+spacingX),
                     yStart,
                     cellWidth,
                     cellHeight
             );
-            if (col == 6) {
+            if(col==6) 
+            {
                 headerLabel.setBackground(Color.BLACK);
                 headerLabel.setForeground(Color.WHITE);
             }
@@ -612,10 +585,6 @@ public class StudentCalendar extends JFrame {
         }
     }
 
-    /**
-     * Updates the labels showing total working days, presents, absents.
-     * Also sets the `attendancePercentage` so we can animate the progress arc.
-     */
     private void updateBottomPanel() {
         int totalWorking = presentCount + absentCount;
         totalWorkingDaysLabel.setText("TOTAL WORKING DAYS: " + totalWorking);
