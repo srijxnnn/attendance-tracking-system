@@ -1,29 +1,26 @@
 package pages.faculty;
 
 import db.DatabaseConnection;
-import pages.auth.UserAuthentication;
-
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.geom.RoundRectangle2D;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.plaf.basic.BasicScrollBarUI;
+import pages.auth.UserAuthentication;
 
-public class FacultyLeaveRequestPermission extends JFrame {
-
-    // We'll load leave requests from the database
+public class FacultyLeaveRequestPermission extends JFrame 
+{
     private final List<LeaveRequestData> requestList = new ArrayList<>();
     private int userId;
     private String facultyName = "";
 
-    public FacultyLeaveRequestPermission(int userId) {
-        this.userId = userId;
+    public FacultyLeaveRequestPermission(int userId) 
+    {
+        this.userId=userId;
         loadFacultyInfo();
-        // Load leave requests from the database
         loadLeaveRequests();
 
         setTitle("Faculty Leave Requests");
@@ -32,21 +29,20 @@ public class FacultyLeaveRequestPermission extends JFrame {
         setLocationRelativeTo(null);
         setLayout(null);
 
-        // Main gradient background panel (grayish gradient)
         GradientPanel backgroundPanel = new GradientPanel();
         backgroundPanel.setBounds(0, 0, getWidth(), getHeight());
         backgroundPanel.setLayout(null);
         add(backgroundPanel);
 
-        // SIDEBAR – fixed on left
-        JPanel sidebar = createSidebar();
+        JPanel sidebar=createSidebar();
         sidebar.setBounds(0, 0, 200, getHeight());
         backgroundPanel.add(sidebar);
 
-        // Header Panel
-        JPanel headerPanel = new JPanel(null) {
+        JPanel headerPanel = new JPanel(null) 
+        {
             @Override
-            protected void paintComponent(Graphics g) {
+            protected void paintComponent(Graphics g) 
+            {
                 super.paintComponent(g);
                 Graphics2D g2 = (Graphics2D) g;
                 g2.setColor(new Color(255,255,255,80));
@@ -57,12 +53,12 @@ public class FacultyLeaveRequestPermission extends JFrame {
         headerPanel.setBounds(200, 0, 800, 60);
         backgroundPanel.add(headerPanel);
 
-        JLabel titleLabel = new JLabel("Leave Requests");
+        JLabel titleLabel=new JLabel("Leave Requests");
         titleLabel.setFont(new Font("SansSerif", Font.BOLD, 22));
         titleLabel.setBounds(20, 10, 300, 40);
         headerPanel.add(titleLabel);
 
-        JButton logoutBtn = new JButton("LOGOUT");
+        JButton logoutBtn=new JButton("LOGOUT");
         logoutBtn.setBounds(650, 15, 100, 30);
         styleHeaderButton(logoutBtn);
         logoutBtn.addMouseListener(new MouseAdapter() {
@@ -82,41 +78,48 @@ public class FacultyLeaveRequestPermission extends JFrame {
             }
         });
         headerPanel.add(logoutBtn);
-
-        // TABLE PANEL: Create a panel that will display leave requests.
-        JPanel contentPanel = new JPanel(null);
+        JPanel contentPanel=new JPanel(null);
         contentPanel.setOpaque(true);
         contentPanel.setBackground(new Color(180,180,180));
         contentPanel.setPreferredSize(new Dimension(800, 600));
 
-        // Table header row with fixed column widths: NAME(140), ROLL NO(90), REGD NO(110), SEMESTER(90), REASON(190), STATUS(110)
-        int[] colWidths = {140, 90, 110, 90, 150, 180};
-        TableHeaderRow headerRow = new TableHeaderRow(colWidths);
+        int[] colWidths={140, 90, 110, 90, 150, 180};
+        TableHeaderRow headerRow=new TableHeaderRow(colWidths);
         headerRow.setBounds(0, 0, 800, 50);
         contentPanel.add(headerRow);
 
-        int startY = 60;
-        for (LeaveRequestData data : requestList) {
-            TableDataRow rowPanel = new TableDataRow(data, colWidths);
+        int startY=60;
+        for(LeaveRequestData data:requestList) 
+        {
+            TableDataRow rowPanel=new TableDataRow(data, colWidths);
             rowPanel.setBounds(0, startY, 800, rowPanel.getPreferredHeight());
             contentPanel.add(rowPanel);
-            startY += rowPanel.getPreferredHeight() + 10;
+            startY+=rowPanel.getPreferredHeight() + 10;
         }
         contentPanel.setPreferredSize(new Dimension(800, startY));
 
-        JScrollPane scrollPane = new JScrollPane(contentPanel);
+        JScrollPane scrollPane=new JScrollPane(contentPanel);
         scrollPane.setBounds(200, 60, 800, 640);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.getVerticalScrollBar().setUnitIncrement(16);
-        scrollPane.getVerticalScrollBar().setUI(new BasicScrollBarUI() {
+        scrollPane.getVerticalScrollBar().setUI(new BasicScrollBarUI() 
+        {
             @Override
-            protected void configureScrollBarColors() {}
+            protected void configureScrollBarColors() 
+            {}
             @Override
-            protected JButton createDecreaseButton(int orientation) { return createZeroButton(); }
+            protected JButton createDecreaseButton(int orientation) 
+            { 
+                return createZeroButton(); 
+            }
             @Override
-            protected JButton createIncreaseButton(int orientation) { return createZeroButton(); }
-            private JButton createZeroButton() {
+            protected JButton createIncreaseButton(int orientation) 
+            { 
+                return createZeroButton(); 
+            }
+            private JButton createZeroButton() 
+            {
                 JButton button = new JButton();
                 button.setPreferredSize(new Dimension(0, 0));
                 button.setMinimumSize(new Dimension(0, 0));
@@ -124,41 +127,45 @@ public class FacultyLeaveRequestPermission extends JFrame {
                 return button;
             }
             @Override
-            protected void paintTrack(Graphics g, JComponent c, Rectangle trackBounds) {}
+            protected void paintTrack(Graphics g, JComponent c, Rectangle trackBounds) 
+            {}
             @Override
-            protected void paintThumb(Graphics g, JComponent c, Rectangle thumbBounds) {}
+            protected void paintThumb(Graphics g, JComponent c, Rectangle thumbBounds) 
+            {}
         });
         scrollPane.getHorizontalScrollBar().setUI(new BasicScrollBarUI() {
             @Override
-            protected void paintTrack(Graphics g, JComponent c, Rectangle trackBounds) {}
+            protected void paintTrack(Graphics g, JComponent c, Rectangle trackBounds) 
+            {}
             @Override
-            protected void paintThumb(Graphics g, JComponent c, Rectangle thumbBounds) {}
+            protected void paintThumb(Graphics g, JComponent c, Rectangle thumbBounds) 
+            {}
         });
         scrollPane.setBorder(null);
         backgroundPanel.add(scrollPane);
     }
 
-    private JPanel createSidebar() {
-        // Create the sidebar panel with a null layout.
+    private JPanel createSidebar() 
+    {
         JPanel sidebar = new JPanel(null);
         sidebar.setBackground(new Color(51, 51, 51));
 
-        // Create the user panel (shows profile picture and faculty name).
-        JPanel userPanel = new JPanel(null) {
+        JPanel userPanel = new JPanel(null) 
+        {
             private Image profileImage;
 
             {
-                profileImage = new ImageIcon("pages/profile-circle-border.png").getImage();
+                profileImage=new ImageIcon("pages/profile-circle-border.png").getImage();
             }
 
             @Override
-            protected void paintComponent(Graphics g) {
+            protected void paintComponent(Graphics g) 
+            {
                 super.paintComponent(g);
-                Graphics2D g2 = (Graphics2D) g;
-                int d = 60; // Diameter of the circle.
-                int x = (getWidth() - d) / 2;
-                int y = 20;
-                // Draw the image scaled to fit within the circle bounds.
+                Graphics2D g2=(Graphics2D) g;
+                int d=60; 
+                int x=(getWidth()-d)/2;
+                int y=20;
                 g2.drawImage(profileImage, x, y, d, d, this);
             }
         };
@@ -166,14 +173,12 @@ public class FacultyLeaveRequestPermission extends JFrame {
         userPanel.setBackground(new Color(51, 51, 51));
         sidebar.add(userPanel);
 
-        // Faculty name (should be set from DB; here assumed available as facultyName).
         JLabel usernameLabel = new JLabel(facultyName, SwingConstants.CENTER);
         usernameLabel.setForeground(Color.WHITE);
         usernameLabel.setFont(new Font("SansSerif", Font.BOLD, 14));
         usernameLabel.setBounds(0, 90, 200, 20);
         userPanel.add(usernameLabel);
 
-        // Edit profile label.
         JLabel editLabel = new JLabel("Edit Profile", SwingConstants.CENTER);
         editLabel.setForeground(new Color(200, 200, 200));
         editLabel.setFont(new Font("SansSerif", Font.PLAIN, 12));
@@ -194,8 +199,7 @@ public class FacultyLeaveRequestPermission extends JFrame {
         });
         userPanel.add(editLabel);
 
-        // Sidebar option labels.
-        String[] options = {"Dashboard", "Leave Requests", "Mark Attendance", "Student Attendance Report"};
+        String[] options={"Dashboard", "Leave Requests", "Mark Attendance", "Student Attendance Report"};
 
         JLabel optionDashboardLabel=new JLabel(options[0], SwingConstants.CENTER);
         optionDashboardLabel.setForeground(Color.WHITE);
@@ -325,11 +329,6 @@ public class FacultyLeaveRequestPermission extends JFrame {
         return sidebar;
     }
 
-
-    /**
-     * Loads leave requests from the database for courses taught by the faculty.
-     * Joins student_leaves, student_courses, courses, students, faculty_courses, and faculty.
-     */
     private void loadLeaveRequests() {
         requestList.clear();
         String query = "SELECT sl.id as leave_id, s.name, s.roll, s.reg_no, c.semester, sl.reason " +
@@ -340,26 +339,32 @@ public class FacultyLeaveRequestPermission extends JFrame {
                 "JOIN faculty_courses fc ON c.id = fc.course_id " +
                 "JOIN faculty f ON fc.faculty_id = f.id " +
                 "WHERE f.user_id = ? AND sl.status = 'pending'";
-        try (Connection conn = DatabaseConnection.getInstance();
-             PreparedStatement ps = conn.prepareStatement(query)) {
+        try(Connection conn = DatabaseConnection.getInstance();
+             PreparedStatement ps = conn.prepareStatement(query)) 
+            {
             ps.setInt(1, userId);
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    int leaveId = rs.getInt("leave_id");
-                    String name = rs.getString("name");
-                    String roll = rs.getString("roll");
-                    String regdNo = rs.getString("reg_no");
-                    String semester = rs.getString("semester");
-                    String reason = rs.getString("reason");
+            try(ResultSet rs = ps.executeQuery()) 
+            {
+                while(rs.next()) 
+                {
+                    int leaveId=rs.getInt("leave_id");
+                    String name=rs.getString("name");
+                    String roll=rs.getString("roll");
+                    String regdNo=rs.getString("reg_no");
+                    String semester=rs.getString("semester");
+                    String reason=rs.getString("reason");
                     requestList.add(new LeaveRequestData(leaveId, name, roll, regdNo, semester, reason));
                 }
             }
-        } catch (SQLException ex) {
+        } 
+        catch (SQLException ex) 
+        {
             ex.printStackTrace();
         }
     }
 
-    private void styleHeaderButton(JButton button) {
+    private void styleHeaderButton(JButton button) 
+    {
         button.setFocusPainted(false);
         button.setFont(new Font("SansSerif", Font.BOLD, 12));
         button.setBackground(new Color(33,150,243));
@@ -367,57 +372,70 @@ public class FacultyLeaveRequestPermission extends JFrame {
         button.setBorder(new RoundedBorder(15));
     }
 
-    private void addButtonHoverGradient(JButton button) {
-        button.addMouseListener(new MouseAdapter() {
+    private void addButtonHoverGradient(JButton button) 
+    {
+        button.addMouseListener(new MouseAdapter() 
+        {
             @Override
-            public void mouseEntered(MouseEvent e) {
+            public void mouseEntered(MouseEvent e) 
+            {
                 button.setBackground(new Color(200,200,200));
             }
             @Override
-            public void mouseExited(MouseEvent e) {
+            public void mouseExited(MouseEvent e) 
+            {
                 button.setBackground(new Color(33,150,243));
             }
         });
     }
 
-    /**
-     * Updates the leave request status in the database.
-     */
-    private void updateLeaveStatus(int leaveId, String newStatus) {
-        String query = "UPDATE student_leaves SET status = ? WHERE id = ?";
-        try (Connection conn = DatabaseConnection.getInstance();
-             PreparedStatement ps = conn.prepareStatement(query)) {
+    private void updateLeaveStatus(int leaveId, String newStatus) 
+    {
+        String query="UPDATE student_leaves SET status = ? WHERE id = ?";
+        try(Connection conn = DatabaseConnection.getInstance();
+             PreparedStatement ps = conn.prepareStatement(query)) 
+            {
             ps.setString(1, newStatus);
             ps.setInt(2, leaveId);
-            int rows = ps.executeUpdate();
-            if (rows > 0) {
+            int rows=ps.executeUpdate();
+            if(rows>0) 
+            {
                 System.out.println("Leave request " + leaveId + " updated to " + newStatus);
             }
-        } catch (SQLException ex) {
+        } 
+        catch(SQLException ex) 
+        {
             ex.printStackTrace();
         }
     }
 
-    private void loadFacultyInfo() {
-        String query = "SELECT name FROM faculty WHERE user_id = ?";
-        try (Connection conn = DatabaseConnection.getInstance();
-             PreparedStatement ps = conn.prepareStatement(query)) {
+    private void loadFacultyInfo() 
+    {
+        String query="SELECT name FROM faculty WHERE user_id = ?";
+        try(Connection conn = DatabaseConnection.getInstance();
+             PreparedStatement ps = conn.prepareStatement(query)) 
+            {
             ps.setInt(1, userId);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    facultyName = rs.getString("name");
+            try(ResultSet rs = ps.executeQuery()) 
+            {
+                if(rs.next()) 
+                {
+                    facultyName=rs.getString("name");
                 }
             }
-        } catch (SQLException ex) {
+        } 
+        catch(SQLException ex) 
+        {
             ex.printStackTrace();
         }
     }
 
 
-    // GradientPanel for background
-    private class GradientPanel extends JPanel {
+    private class GradientPanel extends JPanel 
+    {
         @Override
-        protected void paintComponent(Graphics g) {
+        protected void paintComponent(Graphics g) 
+        {
             super.paintComponent(g);
             Graphics2D g2d = (Graphics2D) g;
             GradientPaint gp = new GradientPaint(0, 0, new Color(44,62,80),
@@ -427,9 +445,10 @@ public class FacultyLeaveRequestPermission extends JFrame {
         }
     }
 
-    // Table header row with customizable column widths.
-    private class TableHeaderRow extends JPanel {
-        public TableHeaderRow(int[] colWidths) {
+    private class TableHeaderRow extends JPanel 
+    {
+        public TableHeaderRow(int[] colWidths) 
+        {
             setLayout(null);
             setOpaque(false);
             setBackground(new Color(255,255,255,80));
@@ -444,7 +463,8 @@ public class FacultyLeaveRequestPermission extends JFrame {
             }
         }
         @Override
-        protected void paintComponent(Graphics g) {
+        protected void paintComponent(Graphics g) 
+        {
             super.paintComponent(g);
             Graphics2D g2 = (Graphics2D) g;
             g2.setColor(new Color(255,255,255,150));
@@ -452,12 +472,13 @@ public class FacultyLeaveRequestPermission extends JFrame {
         }
     }
 
-    // Table data row for leave request entries.
-    private class TableDataRow extends JPanel {
+    private class TableDataRow extends JPanel 
+    {
         private int hoverOffset = 0;
         private Timer hoverTimer;
         private int rowHeight;
-        public TableDataRow(LeaveRequestData data, int[] colWidths) {
+        public TableDataRow(LeaveRequestData data, int[] colWidths) 
+        {
             setLayout(null);
             setOpaque(false);
             // Create cell labels using HTML for wrapping text.
@@ -465,19 +486,20 @@ public class FacultyLeaveRequestPermission extends JFrame {
             int x = 0;
             int maxHeight = 50;
             List<JLabel> cellLabels = new ArrayList<>();
-            for (int i = 0; i < cellTexts.length; i++) {
+            for (int i = 0; i < cellTexts.length; i++) 
+            {
                 JLabel label = new JLabel("<html>" + cellTexts[i] + "</html>", SwingConstants.CENTER);
                 label.setFont(new Font("SansSerif", Font.PLAIN, 14));
                 label.setVerticalAlignment(SwingConstants.TOP);
                 label.setBounds(x, 10, colWidths[i], 50);
                 Dimension pref = label.getPreferredSize();
-                if (pref.height > maxHeight) {
+                if(pref.height > maxHeight) 
+                {
                     maxHeight = pref.height;
                 }
                 cellLabels.add(label);
                 x += colWidths[i];
             }
-            // Use column 5 for REASON.
             JButton seeReasonBtn = new JButton("See Reason");
             seeReasonBtn.setFont(new Font("SansSerif", Font.PLAIN, 10));
             seeReasonBtn.setForeground(Color.WHITE);
@@ -489,21 +511,22 @@ public class FacultyLeaveRequestPermission extends JFrame {
             });
             int reasonCellHeight = 50;
             rowHeight = Math.max(maxHeight, reasonCellHeight);
-            for (JLabel label : cellLabels) {
-                Rectangle b = label.getBounds();
+            for(JLabel label : cellLabels) 
+            {
+                Rectangle b=label.getBounds();
                 label.setBounds(b.x, b.y, b.width, rowHeight);
                 add(label);
             }
-            // Add See Reason button to REASON column.
+            
             seeReasonBtn.setBounds(x, 10, Math.min(100, colWidths[4]), 30);
             add(seeReasonBtn);
-            x += colWidths[4];
-            // STATUS column: add buttons for Approve and Deny.
-            JPanel statusPanel = new JPanel(null);
+            x+=colWidths[4];
+            
+            JPanel statusPanel=new JPanel(null);
             statusPanel.setOpaque(false);
             statusPanel.setBounds(x, 0, colWidths[5], rowHeight);
 
-            JButton approveBtn = new JButton("Approve");
+            JButton approveBtn=new JButton("Approve");
             approveBtn.setFont(new Font("SansSerif", Font.PLAIN, 10));
             approveBtn.setForeground(Color.WHITE);
             approveBtn.setBackground(new Color(46,204,113));
@@ -551,7 +574,8 @@ public class FacultyLeaveRequestPermission extends JFrame {
 
             addMouseListener(new MouseAdapter() {
                 @Override
-                public void mouseEntered(MouseEvent e) {
+                public void mouseEntered(MouseEvent e) 
+                {
                     if (hoverTimer != null && hoverTimer.isRunning()) {
                         hoverTimer.stop();
                     }
@@ -566,15 +590,20 @@ public class FacultyLeaveRequestPermission extends JFrame {
                     hoverTimer.start();
                 }
                 @Override
-                public void mouseExited(MouseEvent e) {
-                    if (hoverTimer != null && hoverTimer.isRunning()) {
+                public void mouseExited(MouseEvent e) 
+                {
+                    if(hoverTimer!=null&&hoverTimer.isRunning()) 
+                    {
                         hoverTimer.stop();
                     }
-                    hoverTimer = new Timer(10, ee -> {
-                        if (hoverOffset < 0) {
+                    hoverTimer=new Timer(10, ee -> {
+                        if(hoverOffset<0) 
+                        {
                             hoverOffset++;
                             repaint();
-                        } else {
+                        } 
+                        else 
+                        {
                             hoverTimer.stop();
                         }
                     });
@@ -583,20 +612,25 @@ public class FacultyLeaveRequestPermission extends JFrame {
             });
         }
 
-        public int getPreferredHeight() {
+        public int getPreferredHeight() 
+        {
             return rowHeight;
         }
 
-        private void addButtonHoverEffect(JButton btn, Color normalColor) {
-            Color hoverColor = normalColor.brighter();
-            btn.addMouseListener(new MouseAdapter() {
+        private void addButtonHoverEffect(JButton btn, Color normalColor) 
+        {
+            Color hoverColor=normalColor.brighter();
+            btn.addMouseListener(new MouseAdapter() 
+            {
                 @Override
-                public void mouseEntered(MouseEvent e) {
+                public void mouseEntered(MouseEvent e) 
+                {
                     btn.setBackground(hoverColor);
                     btn.setForeground(Color.BLACK);
                 }
                 @Override
-                public void mouseExited(MouseEvent e) {
+                public void mouseExited(MouseEvent e) 
+                {
                     btn.setBackground(normalColor);
                     btn.setForeground(Color.WHITE);
                 }
@@ -604,9 +638,11 @@ public class FacultyLeaveRequestPermission extends JFrame {
         }
 
         @Override
-        protected void paintComponent(Graphics g) {
+        protected void paintComponent(Graphics g) 
+        {
             Graphics2D g2 = (Graphics2D) g.create();
-            if (hoverOffset < 0) {
+            if(hoverOffset<0) 
+            {
                 g2.setColor(new Color(0, 0, 0, 50));
                 g2.fillRoundRect(4, getHeight() - 4 + hoverOffset, getWidth(), 5, 15, 15);
             }
@@ -617,49 +653,56 @@ public class FacultyLeaveRequestPermission extends JFrame {
         }
     }
 
-    // Rounded border for buttons.
-    private static class RoundedBorder implements Border {
+    private static class RoundedBorder implements Border 
+    {
         private int radius;
-        public RoundedBorder(int radius) {
-            this.radius = radius;
+        public RoundedBorder(int radius) 
+        {
+            this.radius=radius;
         }
         @Override
-        public Insets getBorderInsets(Component c) {
+        public Insets getBorderInsets(Component c) 
+        {
             return new Insets(radius + 1, radius + 1, radius + 1, radius + 1);
         }
         @Override
-        public boolean isBorderOpaque() {
+        public boolean isBorderOpaque() 
+        {
             return true;
         }
         @Override
-        public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
-            Graphics2D g2 = (Graphics2D) g;
+        public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) 
+        {
+            Graphics2D g2=(Graphics2D) g;
             g2.setColor(c.getBackground());
             g2.drawRoundRect(x, y, width - 1, height - 1, radius, radius);
         }
     }
 
-    // Data class for leave request row data.
-    private static class LeaveRequestData {
+    private static class LeaveRequestData 
+    {
         int leaveId;
         String name, roll, regdNo, semester, reason;
-        public LeaveRequestData(int leaveId, String name, String roll, String regdNo, String semester, String reason) {
-            this.leaveId = leaveId;
-            this.name = name;
-            this.roll = roll;
-            this.regdNo = regdNo;
-            this.semester = semester;
-            this.reason = reason;
+        public LeaveRequestData(int leaveId, String name, String roll, String regdNo, String semester, String reason) 
+        {
+            this.leaveId=leaveId;
+            this.name=name;
+            this.roll=roll;
+            this.regdNo=regdNo;
+            this.semester=semester;
+            this.reason=reason;
         }
         @Override
-        public String toString() {
+        public String toString() 
+        {
             return String.format("[ID: %d, Name: %s, Roll: %s, RegdNo: %s, Sem: %s, Reason: %s]",
                     leaveId, name, roll, regdNo, semester, reason);
         }
     }
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) 
+    {
         SwingUtilities.invokeLater(() -> {
             new FacultyLeaveRequestPermission(6).setVisible(true);
         });
