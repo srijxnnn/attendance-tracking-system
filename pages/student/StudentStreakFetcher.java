@@ -61,7 +61,7 @@ public class StudentStreakFetcher {
     // Method to fetch course name from the courses table using course_id
     private static String getCourseName(int courseId) {
         String courseName = "";
-        String query = "SELECT name FROM courses WHERE id = ?";
+        String query = "SELECT code FROM courses WHERE id = ?";
 
         try (Connection conn = DatabaseConnection.getInstance();
              PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -70,7 +70,7 @@ public class StudentStreakFetcher {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                courseName = rs.getString("name");
+                courseName = rs.getString("code");
             }
 
         } catch (SQLException e) {
@@ -85,7 +85,7 @@ public class StudentStreakFetcher {
         Map<String, Integer> streaks = getStudentStreaks(studentId);
         System.out.println("Current Streaks for Student ID: " + studentId);
         for (Map.Entry<String, Integer> entry : streaks.entrySet()) {
-            System.out.println("Course Name: " + entry.getKey() + ", Streak: " + entry.getValue());
+            System.out.println("Course Code: " + entry.getKey() + ", Streak: " + entry.getValue());
         }
     }
 }

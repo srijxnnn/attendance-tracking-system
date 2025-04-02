@@ -78,10 +78,14 @@ INSERT INTO students (user_id, roll, name, reg_no) VALUES
 
 
 INSERT INTO courses (name, code, semester) VALUES
+                                     ('OOPS in Java', 'CSE403', 4),
+                                     ('Automata Theory', 'CSE402', 4),
+                                     ('Computer Organisation & Architecture', 'CSE401', 4),
                                      ('Mathematics IV', 'MAC401', 4),
                                      ('Humanities II',  'HUC401', 4),
                                      ('Data Structures', 'CSE301', 3),
                                      ('Operating Systems', 'CSE302', 3);
+                                     
 
 
 INSERT INTO student_courses (student_id, course_id) VALUES
