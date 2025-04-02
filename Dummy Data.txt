@@ -37,16 +37,16 @@ INSERT INTO students (user_id, reg_no, name, roll) VALUES
 
 
 INSERT INTO faculty (user_id, name, expertise, designation, last_seen) VALUES
-(1, 'Dr. John Adams', 'Mathematics', 'Associate Professor', '2025-03-01 09:00:00'),
-(2, 'Prof. Lisa Green', 'Literature', 'Professor', '2025-03-02 09:15:00'),
-(3, 'Dr. Mark Jones', 'Computer Science', 'Assistant Professor', '2025-03-03 09:30:00'),
-(4, 'Prof. Emily White', 'Art', 'Associate Professor', '2025-03-04 10:00:00'),
-(5, 'Dr. David Brown', 'Physics', 'Professor', '2025-03-05 10:30:00'),
-(6, 'Dr. Sarah Lee', 'Biology', 'Assistant Professor', '2025-03-06 11:00:00'),
-(7, 'Prof. Kevin Smith', 'Chemistry', 'Professor', '2025-03-07 11:30:00'),
-(8, 'Dr. Olivia James', 'Psychology', 'Associate Professor', '2025-03-08 12:00:00'),
-(9, 'Dr. Lucas Patel', 'Engineering', 'Assistant Professor', '2025-03-09 12:30:00'),
-(10, 'Prof. Isabelle Moore', 'History', 'Professor', '2025-03-10 13:00:00');
+(11, 'Dr. John Adams', 'Mathematics', 'Associate Professor', '2025-03-01 09:00:00'),
+(12, 'Prof. Lisa Green', 'Literature', 'Professor', '2025-03-02 09:15:00'),
+(13, 'Dr. Mark Jones', 'Computer Science', 'Assistant Professor', '2025-03-03 09:30:00'),
+(14, 'Prof. Emily White', 'Art', 'Associate Professor', '2025-03-04 10:00:00'),
+(15, 'Dr. David Brown', 'Physics', 'Professor', '2025-03-05 10:30:00'),
+(16, 'Dr. Sarah Lee', 'Biology', 'Assistant Professor', '2025-03-06 11:00:00'),
+(17, 'Prof. Kevin Smith', 'Chemistry', 'Professor', '2025-03-07 11:30:00'),
+(18, 'Dr. Olivia James', 'Psychology', 'Associate Professor', '2025-03-08 12:00:00'),
+(19, 'Dr. Lucas Patel', 'Engineering', 'Assistant Professor', '2025-03-09 12:30:00'),
+(20, 'Prof. Isabelle Moore', 'History', 'Professor', '2025-03-10 13:00:00');
 
 
 

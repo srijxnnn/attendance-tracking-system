@@ -1,18 +1,15 @@
 package pages.faculty;
 
-import com.sun.tools.javac.Main;
 import db.DatabaseConnection;
-import pages.auth.UserAuthentication;
-
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.RoundRectangle2D;
 import java.sql.*;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicScrollBarUI;
+import pages.auth.UserAuthentication;
 
 public class FacultyDashboard extends JFrame {
 
@@ -26,6 +23,7 @@ public class FacultyDashboard extends JFrame {
     private String facultyExpertise = "";
     private String facultyDesignation = "";
     private String facultyLastSeen = "";
+    private int faculty_id;
 
     public FacultyDashboard(int userId) {
         this.userId = userId;
@@ -64,15 +62,19 @@ public class FacultyDashboard extends JFrame {
         scrollPane.getVerticalScrollBar().setUnitIncrement(16);
         scrollPane.getVerticalScrollBar().setUI(new BasicScrollBarUI() {
             @Override
-            protected void configureScrollBarColors() {}
+            protected void configureScrollBarColors() {
+            }
+
             @Override
             protected JButton createDecreaseButton(int orientation) {
                 return createZeroButton();
             }
+
             @Override
             protected JButton createIncreaseButton(int orientation) {
                 return createZeroButton();
             }
+
             private JButton createZeroButton() {
                 JButton button = new JButton();
                 button.setPreferredSize(new Dimension(0, 0));
@@ -80,16 +82,23 @@ public class FacultyDashboard extends JFrame {
                 button.setMaximumSize(new Dimension(0, 0));
                 return button;
             }
+
             @Override
-            protected void paintTrack(Graphics g, JComponent c, Rectangle trackBounds) {}
+            protected void paintTrack(Graphics g, JComponent c, Rectangle trackBounds) {
+            }
+
             @Override
-            protected void paintThumb(Graphics g, JComponent c, Rectangle thumbBounds) {}
+            protected void paintThumb(Graphics g, JComponent c, Rectangle thumbBounds) {
+            }
         });
         scrollPane.getHorizontalScrollBar().setUI(new BasicScrollBarUI() {
             @Override
-            protected void paintTrack(Graphics g, JComponent c, Rectangle trackBounds) {}
+            protected void paintTrack(Graphics g, JComponent c, Rectangle trackBounds) {
+            }
+
             @Override
-            protected void paintThumb(Graphics g, JComponent c, Rectangle thumbBounds) {}
+            protected void paintThumb(Graphics g, JComponent c, Rectangle thumbBounds) {
+            }
         });
         scrollPane.setBorder(null);
         add(scrollPane);
@@ -108,16 +117,16 @@ public class FacultyDashboard extends JFrame {
     }
 
     /**
-     * Loads the faculty's name, expertise, designation, and last_seen
-     * from the database based on the userId.
+     * Loads the faculty's name, expertise, designation, and last_seen from the
+     * database based on the userId.
      */
     private void loadFacultyInfo() {
-        String query = "SELECT name, expertise, designation, last_seen FROM faculty WHERE user_id = ?";
-        try (Connection conn = DatabaseConnection.getInstance();
-             PreparedStatement ps = conn.prepareStatement(query)) {
+        String query = "SELECT id, name, expertise, designation, last_seen FROM faculty WHERE user_id = ?";
+        try (Connection conn = DatabaseConnection.getInstance(); PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setInt(1, userId);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
+                    faculty_id = rs.getInt("id");
                     facultyName = rs.getString("name");
                     facultyExpertise = rs.getString("expertise");
                     facultyDesignation = rs.getString("designation");
@@ -132,18 +141,15 @@ public class FacultyDashboard extends JFrame {
     }
 
     /**
-     * Loads table data from the database.
-     * For each course taught by this faculty, retrieve:
-     *   - course code
-     *   - semester (assumed to be a column in courses)
-     *   - total number of students enrolled (from student_courses)
+     * Loads table data from the database. For each course taught by this
+     * faculty, retrieve: - course code - semester (assumed to be a column in
+     * courses) - total number of students enrolled (from student_courses)
      */
     private void loadTableData() {
         tableData.clear();
         int facultyId = 0;
         String getFacultyQuery = "SELECT id FROM faculty WHERE user_id = ?";
-        try (Connection conn = DatabaseConnection.getInstance();
-             PreparedStatement ps = conn.prepareStatement(getFacultyQuery)) {
+        try (Connection conn = DatabaseConnection.getInstance(); PreparedStatement ps = conn.prepareStatement(getFacultyQuery)) {
             ps.setInt(1, userId);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
@@ -154,14 +160,13 @@ public class FacultyDashboard extends JFrame {
             ex.printStackTrace();
         }
 
-        String query = "SELECT c.code, c.semester, COUNT(sc.student_id) AS total_students " +
-                "FROM faculty_courses fc " +
-                "JOIN courses c ON fc.course_id = c.id " +
-                "LEFT JOIN student_courses sc ON c.id = sc.course_id " +
-                "WHERE fc.faculty_id = ? " +
-                "GROUP BY c.id, c.code, c.semester";
-        try (Connection conn = DatabaseConnection.getInstance();
-             PreparedStatement ps = conn.prepareStatement(query)) {
+        String query = "SELECT c.code, c.semester, COUNT(sc.student_id) AS total_students "
+                + "FROM faculty_courses fc "
+                + "JOIN courses c ON fc.course_id = c.id "
+                + "LEFT JOIN student_courses sc ON c.id = sc.course_id "
+                + "WHERE fc.faculty_id = ? "
+                + "GROUP BY c.id, c.code, c.semester";
+        try (Connection conn = DatabaseConnection.getInstance(); PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setInt(1, facultyId);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
@@ -217,10 +222,12 @@ public class FacultyDashboard extends JFrame {
             public void mouseEntered(MouseEvent e) {
                 editLabel.setForeground(Color.WHITE);
             }
+
             @Override
             public void mouseExited(MouseEvent e) {
                 editLabel.setForeground(new Color(200, 200, 200));
             }
+
             @Override
             public void mouseClicked(MouseEvent e) {
                 new FacultyEditProfile(userId).setVisible(true);
@@ -231,30 +238,28 @@ public class FacultyDashboard extends JFrame {
         sidebar.add(userPanel);
 
         String[] options = {"Dashboard", "Leave Requests", "Mark Attendance", "Student Attendance Report"};
-        JLabel optionDashboardLabel=new JLabel(options[0], SwingConstants.CENTER);
+        JLabel optionDashboardLabel = new JLabel(options[0], SwingConstants.CENTER);
         optionDashboardLabel.setForeground(Color.WHITE);
         optionDashboardLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
         optionDashboardLabel.setOpaque(true);
         optionDashboardLabel.setBackground(new Color(51, 51, 51));
-        optionDashboardLabel.setBounds(0, 160+0*50, 200, 40);
+        optionDashboardLabel.setBounds(0, 160 + 0 * 50, 200, 40);
 
-        optionDashboardLabel.addMouseListener(new MouseAdapter()
-        {
+        optionDashboardLabel.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseEntered(MouseEvent e)
-            {
+            public void mouseEntered(MouseEvent e) {
                 optionDashboardLabel.setBackground(new Color(70, 70, 70));
             }
+
             @Override
-            public void mouseExited(MouseEvent e)
-            {
+            public void mouseExited(MouseEvent e) {
                 optionDashboardLabel.setBackground(new Color(51, 51, 51));
             }
+
             @Override
-            public void mouseClicked(MouseEvent e)
-            {
-                SwingUtilities.invokeLater(() ->
-                {
+            public void mouseClicked(MouseEvent e) {
+                SwingUtilities.invokeLater(()
+                        -> {
                     FacultyDashboard.this.dispose();
                     new FacultyDashboard(userId).setVisible(true);
                     System.out.println(userId);
@@ -264,28 +269,26 @@ public class FacultyDashboard extends JFrame {
         });
         sidebar.add(optionDashboardLabel);
 
-        JLabel optionLeaveRequestPermissionLabel=new JLabel(options[1], SwingConstants.CENTER);
+        JLabel optionLeaveRequestPermissionLabel = new JLabel(options[1], SwingConstants.CENTER);
         optionLeaveRequestPermissionLabel.setForeground(Color.WHITE);
         optionLeaveRequestPermissionLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
         optionLeaveRequestPermissionLabel.setOpaque(true);
         optionLeaveRequestPermissionLabel.setBackground(new Color(51, 51, 51));
-        optionLeaveRequestPermissionLabel.setBounds(0, 160+1*50, 200, 40);
+        optionLeaveRequestPermissionLabel.setBounds(0, 160 + 1 * 50, 200, 40);
 
-        optionLeaveRequestPermissionLabel.addMouseListener(new MouseAdapter()
-        {
+        optionLeaveRequestPermissionLabel.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseEntered(MouseEvent e)
-            {
+            public void mouseEntered(MouseEvent e) {
                 optionLeaveRequestPermissionLabel.setBackground(new Color(70, 70, 70));
             }
+
             @Override
-            public void mouseExited(MouseEvent e)
-            {
+            public void mouseExited(MouseEvent e) {
                 optionLeaveRequestPermissionLabel.setBackground(new Color(51, 51, 51));
             }
+
             @Override
-            public void mouseClicked(MouseEvent e)
-            {
+            public void mouseClicked(MouseEvent e) {
                 SwingUtilities.invokeLater(() -> {
                     FacultyDashboard.this.dispose();
                     new FacultyLeaveRequestPermission(userId).setVisible(true);
@@ -295,30 +298,28 @@ public class FacultyDashboard extends JFrame {
         });
         sidebar.add(optionLeaveRequestPermissionLabel);
 
-        JLabel optionAttendanceMarkingLabel=new JLabel(options[2], SwingConstants.CENTER);
+        JLabel optionAttendanceMarkingLabel = new JLabel(options[2], SwingConstants.CENTER);
         optionAttendanceMarkingLabel.setForeground(Color.WHITE);
         optionAttendanceMarkingLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
         optionAttendanceMarkingLabel.setOpaque(true);
         optionAttendanceMarkingLabel.setBackground(new Color(51, 51, 51));
-        optionAttendanceMarkingLabel.setBounds(0, 160+2*50, 200, 40);
+        optionAttendanceMarkingLabel.setBounds(0, 160 + 2 * 50, 200, 40);
 
-        optionAttendanceMarkingLabel.addMouseListener(new MouseAdapter()
-        {
+        optionAttendanceMarkingLabel.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseEntered(MouseEvent e)
-            {
+            public void mouseEntered(MouseEvent e) {
                 optionAttendanceMarkingLabel.setBackground(new Color(70, 70, 70));
             }
+
             @Override
-            public void mouseExited(MouseEvent e)
-            {
+            public void mouseExited(MouseEvent e) {
                 optionAttendanceMarkingLabel.setBackground(new Color(51, 51, 51));
             }
+
             @Override
-            public void mouseClicked(MouseEvent e)
-            {
-                SwingUtilities.invokeLater(() ->
-                {
+            public void mouseClicked(MouseEvent e) {
+                SwingUtilities.invokeLater(()
+                        -> {
                     FacultyDashboard.this.dispose();
                     new StudentAttendanceMarkingPage(userId).setVisible(true);
                 });
@@ -326,30 +327,28 @@ public class FacultyDashboard extends JFrame {
         });
         sidebar.add(optionAttendanceMarkingLabel);
 
-        JLabel optionStudentAttendanceReportLabel=new JLabel(options[3], SwingConstants.CENTER);
+        JLabel optionStudentAttendanceReportLabel = new JLabel(options[3], SwingConstants.CENTER);
         optionStudentAttendanceReportLabel.setForeground(Color.WHITE);
         optionStudentAttendanceReportLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
         optionStudentAttendanceReportLabel.setOpaque(true);
         optionStudentAttendanceReportLabel.setBackground(new Color(51, 51, 51));
-        optionStudentAttendanceReportLabel.setBounds(0, 160+3*50, 200, 40);
+        optionStudentAttendanceReportLabel.setBounds(0, 160 + 3 * 50, 200, 40);
 
-        optionStudentAttendanceReportLabel.addMouseListener(new MouseAdapter()
-        {
+        optionStudentAttendanceReportLabel.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseEntered(MouseEvent e)
-            {
+            public void mouseEntered(MouseEvent e) {
                 optionStudentAttendanceReportLabel.setBackground(new Color(70, 70, 70));
             }
+
             @Override
-            public void mouseExited(MouseEvent e)
-            {
+            public void mouseExited(MouseEvent e) {
                 optionStudentAttendanceReportLabel.setBackground(new Color(51, 51, 51));
             }
+
             @Override
-            public void mouseClicked(MouseEvent e)
-            {
-                SwingUtilities.invokeLater(()->
-                {
+            public void mouseClicked(MouseEvent e) {
+                SwingUtilities.invokeLater(()
+                        -> {
                     FacultyDashboard.this.dispose();
                     new FacultyCalendar(userId).setVisible(true);
                 });
@@ -376,11 +375,39 @@ public class FacultyDashboard extends JFrame {
         titleLabel.setBounds(20, 30, 300, 40);
         headerPanel.add(titleLabel);
 
-        JButton exportBtn = new JButton("Export as PDF");
+        JButton exportBtn = new JButton("Send Notice");
         styleHeaderButton(exportBtn);
         exportBtn.setBounds(500, 35, 140, 30);
         headerPanel.add(exportBtn);
-
+        exportBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Create a waiting dialog
+                JOptionPane waitingDialog = new JOptionPane("Sending attendance warnings...", JOptionPane.INFORMATION_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
+                JDialog dialog = waitingDialog.createDialog("Processing");
+                dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+        
+                // Run in a background thread using SwingWorker
+                SwingWorker<Void, Void> worker = new SwingWorker<>() {
+                    @Override
+                    protected Void doInBackground() throws Exception {
+                        // Call the mailer function
+                        AttendanceWarningMailer.sendWarnings(faculty_id);
+                        return null;
+                    }
+        
+                    @Override
+                    protected void done() {
+                        dialog.dispose(); // Close the waiting message
+                        JOptionPane.showMessageDialog(null, "All warning emails have been sent successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                };
+        
+                worker.execute(); // Start the background task
+                dialog.setVisible(true); // Show waiting message
+            }
+        });
+        
         JButton logoutBtn = new JButton("LOGOUT");
         styleHeaderButton(logoutBtn);
         logoutBtn.setBounds(650, 35, 100, 30);
@@ -390,10 +417,12 @@ public class FacultyDashboard extends JFrame {
             public void mouseEntered(MouseEvent e) {
                 logoutBtn.setBackground(new Color(255, 69, 0));
             }
+
             @Override
             public void mouseExited(MouseEvent e) {
                 logoutBtn.setBackground(new Color(0, 123, 255));
             }
+
             @Override
             public void mouseClicked(MouseEvent e) {
                 FacultyDashboard.this.dispose();
@@ -444,6 +473,7 @@ public class FacultyDashboard extends JFrame {
             public void mouseEntered(MouseEvent e) {
                 button.setBackground(new Color(200, 200, 200));
             }
+
             @Override
             public void mouseExited(MouseEvent e) {
                 button.setBackground(new Color(0, 123, 255));
@@ -453,8 +483,7 @@ public class FacultyDashboard extends JFrame {
 
     private void updateLastSeen() {
         String query = "UPDATE faculty SET last_seen = ? WHERE user_id = ?";
-        try (Connection conn = DatabaseConnection.getInstance();
-             PreparedStatement ps = conn.prepareStatement(query)) {
+        try (Connection conn = DatabaseConnection.getInstance(); PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
             ps.setInt(2, userId);
             ps.executeUpdate();
@@ -463,8 +492,8 @@ public class FacultyDashboard extends JFrame {
         }
     }
 
-
     private class GradientPanel extends JPanel {
+
         @Override
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
@@ -477,7 +506,9 @@ public class FacultyDashboard extends JFrame {
     }
 
     private static class TableRowData {
+
         String subjectCode, semester, totalStudents;
+
         public TableRowData(String sc, String sem, String total) {
             subjectCode = sc;
             semester = sem;
@@ -486,6 +517,7 @@ public class FacultyDashboard extends JFrame {
     }
 
     private class TableRow extends JPanel {
+
         private float fadeAlpha = 0f;
         private int hoverOffset = 0;
         private Timer fadeTimer, hoverTimer;
@@ -528,6 +560,7 @@ public class FacultyDashboard extends JFrame {
                         });
                         hoverTimer.start();
                     }
+
                     @Override
                     public void mouseExited(MouseEvent e) {
                         if (hoverTimer != null && hoverTimer.isRunning()) {
@@ -576,6 +609,7 @@ public class FacultyDashboard extends JFrame {
 
     // InfoPanel displays the faculty's details dynamically.
     private class InfoPanel extends JPanel {
+
         private float fadeAlpha = 0f;
         private Timer fadeTimer;
 
@@ -624,4 +658,3 @@ public class FacultyDashboard extends JFrame {
         });
     }
 }
-
