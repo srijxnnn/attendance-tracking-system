@@ -19,15 +19,12 @@ public class StudentLeaveApplicationPage extends JFrame {
     private String studentName = "";
     private int regNo = 0;
 
-    // We'll store (courseCode -> courseId) so we can look up the course_id easily when inserting
     private Map<String, Integer> courseMap = new HashMap<>();
 
-    // UI components we need to access in different methods:
     private JComboBox<String> subjectComboBox;
     private JTextArea reasonTextArea;
     private DefaultTableModel tableModel;
 
-    // We'll assume you pass in the studentId from somewhere (login, etc.)
     private int studentId;
     private int userId;
 
@@ -37,10 +34,6 @@ public class StudentLeaveApplicationPage extends JFrame {
         initUI();
         loadRecentLeaves();
     }
-
-    /**
-     * Loads student info (name, reg_no) and their course list from DB.
-     */
     private void loadStudentData(int userId) {
         try (Connection conn = DatabaseConnection.getInstance()) {
             // 1) Load student basic info
@@ -64,7 +57,6 @@ public class StudentLeaveApplicationPage extends JFrame {
                 }
             }
 
-            // 2) Load student courses (code + ID)
             String courseQuery = "SELECT c.id, c.code " +
                     "FROM courses c " +
                     "JOIN student_courses sc ON c.id = sc.course_id " +
@@ -85,9 +77,6 @@ public class StudentLeaveApplicationPage extends JFrame {
         }
     }
 
-    /**
-     * Builds the UI.
-     */
     private void initUI() {
         setTitle("Leave Application");
         setSize(1000, 700);
@@ -95,7 +84,6 @@ public class StudentLeaveApplicationPage extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        // Main Gradient Background
         JPanel backgroundPanel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
@@ -117,7 +105,6 @@ public class StudentLeaveApplicationPage extends JFrame {
         sidebar.setBackground(new Color(51, 51, 51));
         sidebar.setBounds(0, 0, 200, getHeight());
 
-        // User Panel on Sidebar
         JPanel userPanel = new JPanel(null) {
             private Image profileImage;
 
@@ -129,10 +116,9 @@ public class StudentLeaveApplicationPage extends JFrame {
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 Graphics2D g2 = (Graphics2D) g;
-                int d = 60; // Diameter of the circle.
+                int d = 60; 
                 int x = (getWidth() - d) / 2;
                 int y = 20;
-                // Draw the image scaled to fit within the circle bounds.
                 g2.drawImage(profileImage, x, y, d, d, this);
             }
         };
@@ -169,7 +155,6 @@ public class StudentLeaveApplicationPage extends JFrame {
         userPanel.add(editLabel);
         sidebar.add(userPanel);
 
-        // Sidebar Options
         String[] options = {"Dashboard", "Leave Application", "Student Calendar", "Attendance Report"};
 
         JLabel optionDashboardLabel=new JLabel(options[0], SwingConstants.CENTER);
@@ -319,17 +304,14 @@ public class StudentLeaveApplicationPage extends JFrame {
         headerPanel.add(headerLabel);
         headerPanel.add(logoutButton);
 
-        // Main Content Panel (for the leave form)
         JPanel mainContentPanel = new JPanel(null);
         mainContentPanel.setBounds(210, 70, 760, 580);
         mainContentPanel.setBackground(new Color(255, 255, 255, 80));
 
-        // Subject Code
         JLabel subjectCodeLabel = new JLabel("Subject Code:");
         subjectCodeLabel.setFont(new Font("SansSerif", Font.BOLD, 16));
         subjectCodeLabel.setBounds(30, 30, 120, 30);
 
-        // Fill the combo box with the student's courses from the courseMap
         subjectComboBox = new JComboBox<>(courseMap.keySet().toArray(new String[0]));
         subjectComboBox.setBounds(160, 30, 200, 30);
         subjectComboBox.addPopupMenuListener(new PopupMenuListener() {
@@ -337,7 +319,6 @@ public class StudentLeaveApplicationPage extends JFrame {
             public void popupMenuWillBecomeVisible(PopupMenuEvent e) {}
             @Override
             public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
-                // Force a repaint so the gradient is redrawn
                 backgroundPanel.repaint();
             }
             @Override
@@ -345,7 +326,6 @@ public class StudentLeaveApplicationPage extends JFrame {
         });
 
 
-        // Reason for Leave
         JLabel reasonLabel = new JLabel("Reason for Leave:");
         reasonLabel.setFont(new Font("SansSerif", Font.BOLD, 16));
         reasonLabel.setBounds(30, 80, 150, 30);
@@ -357,7 +337,6 @@ public class StudentLeaveApplicationPage extends JFrame {
         JScrollPane reasonScrollPane = new JScrollPane(reasonTextArea);
         reasonScrollPane.setBounds(30, 120, 500, 150);
 
-        // Request Leave Button
         JButton requestLeaveButton = new JButton("Request Leave");
         requestLeaveButton.setBounds(30, 280, 150, 30);
         requestLeaveButton.addMouseListener(new MouseAdapter() {
@@ -394,11 +373,7 @@ public class StudentLeaveApplicationPage extends JFrame {
         add(backgroundPanel);
     }
 
-    /**
-     * Inserts a new leave request into the DB, then reloads the recent leaves table.
-     */
     private void handleLeaveRequest() {
-        // Retrieve data from UI
         String selectedCode = (String) subjectComboBox.getSelectedItem();
         String reason = reasonTextArea.getText().trim();
 
@@ -411,15 +386,11 @@ public class StudentLeaveApplicationPage extends JFrame {
             return;
         }
 
-        // Get the course_id from our map
         int courseId = courseMap.get(selectedCode);
 
-        // For date, you might want to prompt user for date or default to today's date:
         LocalDate today = LocalDate.now();
-        Date sqlDate = Date.valueOf(today);  // convert LocalDate to java.sql.Date
+        Date sqlDate = Date.valueOf(today);  
 
-        // Insert into student_leaves: (student_id, date, course_id, status, reason)
-        // We'll default status to 'pending'
         try (Connection conn = DatabaseConnection.getInstance()) {
             String insertQuery = "INSERT INTO student_leaves (student_id, date, course_id, status, reason) " +
                     "VALUES (?, ?, ?, ?, ?)";
@@ -434,10 +405,8 @@ public class StudentLeaveApplicationPage extends JFrame {
             }
             JOptionPane.showMessageDialog(this, "Leave Requested Successfully!");
 
-            // Clear the reason field
             reasonTextArea.setText("");
 
-            // Reload the recent leaves table
             loadRecentLeaves();
 
         } catch (SQLException ex) {
@@ -446,19 +415,15 @@ public class StudentLeaveApplicationPage extends JFrame {
         }
     }
 
-    /**
-     * Loads the student’s recent leave applications from DB into the table.
-     */
+
     private void loadRecentLeaves() {
-        // Clear existing rows
         tableModel.setRowCount(0);
 
-        // SELECT the leaves + course code from DB
         String query = "SELECT sl.date, c.code, sl.status " +
                 "FROM student_leaves sl " +
                 "JOIN courses c ON sl.course_id = c.id " +
                 "WHERE sl.student_id = ? " +
-                "ORDER BY sl.id DESC"; // Or by date DESC, whichever you prefer
+                "ORDER BY sl.id DESC"; 
 
         try (Connection conn = DatabaseConnection.getInstance();
              PreparedStatement ps = conn.prepareStatement(query)) {
@@ -471,7 +436,6 @@ public class StudentLeaveApplicationPage extends JFrame {
                     String courseCode = rs.getString("code");
                     String status     = rs.getString("status");
 
-                    // Add row to the table
                     tableModel.addRow(new Object[]{courseCode, leaveDate.toString(), status});
                 }
             }
@@ -481,7 +445,6 @@ public class StudentLeaveApplicationPage extends JFrame {
     }
 
     public static void main(String[] args) {
-        // Suppose studentId = 1 after successful login
         SwingUtilities.invokeLater(() -> {
             new StudentLeaveApplicationPage(1).setVisible(true);
         });

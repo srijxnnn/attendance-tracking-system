@@ -64,7 +64,7 @@ public class AttendanceReportPage extends JFrame {
         chartsContainer.setBounds(210, dynamicY, 750, 250);
         contentPanel.add(chartsContainer);
 
-        int totalHeight = dynamicY + chartsContainer.getHeight() + 20; // extra margin
+        int totalHeight = dynamicY + chartsContainer.getHeight() + 20; 
         contentPanel.setPreferredSize(new Dimension(1000, totalHeight));
         contentPanel.revalidate();
 
@@ -214,10 +214,9 @@ public class AttendanceReportPage extends JFrame {
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 Graphics2D g2 = (Graphics2D) g;
-                int d = 60; // Diameter of the circle.
+                int d = 60; 
                 int x = (getWidth() - d) / 2;
                 int y = 20;
-                // Draw the image scaled to fit within the circle bounds.
                 g2.drawImage(profileImage, x, y, d, d, this);
             }
         };
@@ -380,7 +379,6 @@ public class AttendanceReportPage extends JFrame {
         File file = new File(baseName);
         int count = 1;
 
-        // Check if file already exists, if so, create a new one with a number
         while (file.exists()) {
             String newName = baseName.replace(".pdf", "_" + count + ".pdf");
             file = new File(newName);
@@ -423,13 +421,10 @@ public class AttendanceReportPage extends JFrame {
 
             new Thread(() -> {
                 try {
-                    // Define fixed file name (this will be replaced if it already exists)
                     String filePath = "./attendance_report.pdf";
 
-                    // Call the updated getReport method to overwrite the file
                     AttendanceReport.getReport(studentId, filePath);
 
-                    // Close the loading dialog after successful generation
                     loadingDialog.dispose();
                     JOptionPane.showMessageDialog(null, "PDF successfully generated: " + filePath);
                     JOptionPane.showMessageDialog(null, "A copy is sent to your mail! Check your inbox");

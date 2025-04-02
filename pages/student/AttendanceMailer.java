@@ -30,7 +30,6 @@ public class AttendanceMailer {
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipientEmail));
             message.setSubject("Your Attendance Report - " + studentName);
 
-            // Email Body
             MimeBodyPart messageBodyPart = new MimeBodyPart();
             messageBodyPart.setContent(
                 "<html><body>"
@@ -42,7 +41,6 @@ public class AttendanceMailer {
                 "text/html"
             );
 
-            // Attachment
             MimeBodyPart attachmentPart = new MimeBodyPart();
             File file = new File(pdfFilePath);
             if (!file.exists()) {
@@ -51,14 +49,12 @@ public class AttendanceMailer {
             }
             attachmentPart.attachFile(file);
 
-            // Combine Email Body and Attachment
             Multipart multipart = new MimeMultipart();
             multipart.addBodyPart(messageBodyPart);
             multipart.addBodyPart(attachmentPart);
 
             message.setContent(multipart);
 
-            // Send the Email
             Transport.send(message);
             System.out.println("Attendance report sent to " + recipientEmail);
             return true;

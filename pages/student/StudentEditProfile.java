@@ -3,7 +3,6 @@ package pages.student;
 import db.DatabaseConnection;
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.geom.RoundRectangle2D;
 import java.sql.*;
 import java.util.Arrays;
 import java.util.List;
@@ -15,36 +14,30 @@ import javax.swing.plaf.basic.BasicScrollBarUI;
 public class StudentEditProfile extends JFrame {
 
     private int userId;
-    // Profile details loaded from DB.
-    private String username;    // from users table
-    private String email;       // from users table
-    private String name;        // from students table
-    private String regdNo;      // from students table
-    private String roll;        // from students table
-    // Students don't have a semester field so it's removed.
-    // Courses: mapping stored via student_courses joined with courses.
-    private String courses;     // comma-separated list of course codes
+    private String username;  
+    private String email;      
+    private String name;      
+    private String regdNo;     
+    private String roll;       
+    private String courses;     
 
     // UI Components
-    private JTextField usernameField; // non-editable
-    private JTextField emailField;    // non-editable or editable (depending on your requirements)
-    private JTextField nameField;     // non-editable
-    private JTextField regdField;     // non-editable
-    private JTextField rollField;     // non-editable
-    private JTextArea coursesArea;    // editable (comma separated)
+    private JTextField usernameField; 
+    private JTextField emailField;    
+    private JTextField nameField; 
+    private JTextField regdField;    
+    private JTextField rollField;    
+    private JTextArea coursesArea;  
     private JButton saveButton;
 
     public StudentEditProfile(int userId) {
         this.userId = userId;
-        loadUserInfo();      // Loads username and email from users table.
-        loadStudentInfo();   // Loads name, reg_no, roll from students table.
-        loadStudentCourses(); // Loads comma-separated course codes.
+        loadUserInfo();      
+        loadStudentInfo();   
+        loadStudentCourses(); 
         initUI();
     }
 
-    /**
-     * Loads username and email from the users table using userId.
-     */
     private void loadUserInfo() {
         String query = "SELECT username, email FROM users WHERE id = ?";
         try (Connection conn = DatabaseConnection.getInstance();
@@ -61,10 +54,6 @@ public class StudentEditProfile extends JFrame {
         }
     }
 
-    /**
-     * Loads student details from the students table.
-     * Assumes the students table contains: name, reg_no, roll.
-     */
     private void loadStudentInfo() {
         String query = "SELECT name, reg_no, roll FROM students WHERE user_id = ?";
         try (Connection conn = DatabaseConnection.getInstance();
@@ -82,9 +71,6 @@ public class StudentEditProfile extends JFrame {
         }
     }
 
-    /**
-     * Loads the student's course codes from the database and builds a comma-separated string.
-     */
     private void loadStudentCourses() {
         String query = "SELECT c.code " +
                 "FROM student_courses sc " +
@@ -108,10 +94,6 @@ public class StudentEditProfile extends JFrame {
         courses = sb.toString();
     }
 
-    /**
-     * Updates the student's profile.
-     * Updates the users table (username, email) and the student_courses mapping based on the coursesArea.
-     */
     private void updateProfile() {
         String userQuery = "UPDATE users SET username = ?, email = ? WHERE id = ?";
         try (Connection conn = DatabaseConnection.getInstance();
@@ -133,10 +115,6 @@ public class StudentEditProfile extends JFrame {
         }
     }
 
-    /**
-     * Updates the student_courses mapping.
-     * Deletes existing mappings and inserts new ones based on the comma-separated course codes.
-     */
     private void updateStudentCourses(String coursesInput) {
         List<String> courseCodes = Arrays.stream(coursesInput.split(","))
                 .map(String::trim)
@@ -190,10 +168,6 @@ public class StudentEditProfile extends JFrame {
         add(panel);
     }
 
-    /**
-     * Custom panel for editing the student profile.
-     * Uses a gradient background with a fade-in effect and displays a circular profile placeholder.
-     */
     private class ProfilePanel extends JPanel {
         private float alpha = 0f;
         private Timer fadeTimer;
@@ -212,7 +186,6 @@ public class StudentEditProfile extends JFrame {
             });
             fadeTimer.start();
 
-            // Circular profile picture placeholder.
             JPanel picPanel = new JPanel() {
                 private Image profileImage = new ImageIcon("pages/profile-circle-border.png").getImage();
 
@@ -281,7 +254,6 @@ public class StudentEditProfile extends JFrame {
             rollField.setEditable(false);
             add(rollField);
 
-            // Editable field for courses.
             JLabel coursesLabel = new JLabel("Courses:");
             coursesLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
             coursesLabel.setBounds(150, 180, 80, 20);

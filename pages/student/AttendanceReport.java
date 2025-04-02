@@ -76,7 +76,6 @@ public class AttendanceReport {
                     .setTextAlignment(TextAlignment.CENTER));
             document.add(new Paragraph("\n"));
 
-            // Title
             document.add(new Paragraph("STUDENT ATTENDANCE REPORT")
                     .setFontSize(18).setBold()
                     .setTextAlignment(TextAlignment.CENTER)

@@ -32,11 +32,9 @@ public class StudentCalendar extends JFrame {
 
     private int presentCount, absentCount, unmarkedCount;
 
-    // For the circular progress
     private int attendancePercentage = 0; 
     private int progress = 0;
 
-    // Student info
     private int userId;
     private int studentId;
     private String studentName = "Unknown"; 
@@ -120,7 +118,6 @@ public class StudentCalendar extends JFrame {
         sidebar.setBounds(0, 0, 200, getHeight());
         backgroundPanel.add(sidebar);
 
-        // User Panel on Sidebar
         JPanel userPanel = new JPanel(null) {
             private Image profileImage;
 
@@ -169,7 +166,6 @@ public class StudentCalendar extends JFrame {
         userPanel.add(editLabel);
         sidebar.add(userPanel);
 
-        // Sidebar options
         JLabel optionDashboardLabel=new JLabel(options[0], SwingConstants.CENTER);
         optionDashboardLabel.setForeground(Color.WHITE);
         optionDashboardLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
@@ -333,7 +329,6 @@ public class StudentCalendar extends JFrame {
         logoutBtn.setBounds(620, 10, 100, 30);
         topPanel.add(logoutBtn);
 
-        // Calendar panel
         calendarPanel = new JPanel(null) {
             @Override
             protected void paintComponent(Graphics g) {
@@ -347,7 +342,6 @@ public class StudentCalendar extends JFrame {
         calendarPanel.setOpaque(false);
         backgroundPanel.add(calendarPanel);
 
-        // Circular progress panel
         progressPanel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
@@ -384,7 +378,6 @@ public class StudentCalendar extends JFrame {
         attPercentPanel.add(attPercentLabel);
         backgroundPanel.add(attPercentPanel);
 
-        // Bottom panel
         JPanel bottomPanel = new JPanel(null) {
             @Override
             protected void paintComponent(Graphics g) {
@@ -591,8 +584,6 @@ public class StudentCalendar extends JFrame {
         presentLabel.setText("Presents: " + presentCount);
         absentLabel.setText("Absents: " + absentCount);
 
-        // If you want to define unmarked as non-working or whatever,
-        // you could do a different formula. This example uses totalWorking:
         if (totalWorking > 0) {
             attendancePercentage = (int)((presentCount * 100.0) / totalWorking);
         } else {
@@ -600,9 +591,6 @@ public class StudentCalendar extends JFrame {
         }
     }
 
-    /**
-     * Animates the circular arc from 0 up to attendancePercentage.
-     */
     private void animateAttendanceArc() {
         progress = 0; // reset to 0 each time
         Timer timer = new Timer(20, e -> {
@@ -617,7 +605,6 @@ public class StudentCalendar extends JFrame {
     }
 
     public static void main(String[] args) {
-        // Suppose we pass a known studentId (e.g. 1) after login
         SwingUtilities.invokeLater(() -> {
             new StudentCalendar(1).setVisible(true);
         });

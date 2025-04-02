@@ -23,7 +23,6 @@ public class StudentStreakFetcher {
 
             Map<Integer, Integer> currentStreaks = new HashMap<>();
 
-            // First, get all the course ids and calculate the streaks.
             while (rs.next()) {
                 int courseId = rs.getInt("course_id");
                 String status = rs.getString("status");
@@ -39,15 +38,12 @@ public class StudentStreakFetcher {
                 }
             }
 
-            // Now, we will map course_id to course_name
             for (Map.Entry<Integer, Integer> entry : currentStreaks.entrySet()) {
                 int courseId = entry.getKey();
                 int streak = entry.getValue();
                 
-                // Get the course name using the course_id
                 String courseName = getCourseName(courseId);
                 
-                // Put the course name and streak into the final map
                 streaks.put(courseName, streak);
             }
 
@@ -58,7 +54,6 @@ public class StudentStreakFetcher {
         return streaks;
     }
 
-    // Method to fetch course name from the courses table using course_id
     private static String getCourseName(int courseId) {
         String courseName = "";
         String query = "SELECT code FROM courses WHERE id = ?";

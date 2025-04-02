@@ -30,15 +30,12 @@ public class ProfileFormPage extends JFrame {
         setLocationRelativeTo(null);
         setLayout(null);
 
-        // Main gradient background panel with a lighter grayish gradient
         GradientPanel backgroundPanel = new GradientPanel();
         backgroundPanel.setBounds(0, 0, getWidth(), getHeight());
         backgroundPanel.setLayout(null);
         add(backgroundPanel);
 
-        // Create a form container panel (centered)
         JPanel formContainer = new JPanel(null) {
-            // Use hover effect to change background and border color.
             private Color normalBg = new Color(255, 255, 255, 230);
             private Color hoverBg = new Color(235, 235, 235, 230);
             private Color normalBorder = new Color(200, 200, 200);
@@ -46,7 +43,6 @@ public class ProfileFormPage extends JFrame {
 
             @Override
             protected void paintComponent(Graphics g) {
-                // Fill background of container with current background color.
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setColor(getBackground());
                 g2.fillRect(0, 0, getWidth(), getHeight());
@@ -60,13 +56,10 @@ public class ProfileFormPage extends JFrame {
         backgroundPanel.add(welcomeLabel);
 
         formContainer.setOpaque(false);
-        // Center the container in the frame: container size 500x450
         formContainer.setBounds(200, 65, 600, 575);
-        // Set a rounded line border
         formContainer.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200), 2, true));
         backgroundPanel.add(formContainer);
 
-        // Add hover effect to the container (change border color)
         formContainer.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -81,7 +74,6 @@ public class ProfileFormPage extends JFrame {
         });
 
         ImageIcon profileIcon = new ImageIcon(getClass().getResource("profile.png"));
-        // Scale the image to fit the desired dimensions (100x170)
         Image scaledImage = profileIcon.getImage().getScaledInstance(170, 170, Image.SCALE_SMOOTH);
         profileIcon = new ImageIcon(scaledImage);
         ProfileLabel = new JLabel(profileIcon);
@@ -89,12 +81,10 @@ public class ProfileFormPage extends JFrame {
         formContainer.add(ProfileLabel);
 
 
-        // Set vertical starting point for form fields (below the image)
         int currentY = 225;
         int labelWidth = 100, fieldWidth = 300, fieldHeight = 30, gap = 20;
         int centerX = (500 - fieldWidth) / 2;
 
-        // Name label and text field
         JLabel nameLabel = new JLabel("NAME:");
         nameLabel.setFont(new Font("SansSerif", Font.BOLD, 14));
         nameLabel.setBounds(50, currentY, labelWidth, fieldHeight);
@@ -105,7 +95,6 @@ public class ProfileFormPage extends JFrame {
         formContainer.add(nameField);
         currentY += fieldHeight + gap;
 
-        // Roll No.
         JLabel rollLabel = new JLabel("ROLL NO:");
         rollLabel.setFont(new Font("SansSerif", Font.BOLD, 14));
         rollLabel.setBounds(50, currentY, labelWidth, fieldHeight);
@@ -116,7 +105,6 @@ public class ProfileFormPage extends JFrame {
         formContainer.add(rollField);
         currentY += fieldHeight + gap;
 
-        // Regd No.
         JLabel regdLabel = new JLabel("REGD NO:");
         regdLabel.setFont(new Font("SansSerif", Font.BOLD, 14));
         regdLabel.setBounds(50, currentY, labelWidth, fieldHeight);
@@ -127,7 +115,6 @@ public class ProfileFormPage extends JFrame {
         formContainer.add(regdField);
         currentY += fieldHeight + gap;
 
-        // Semester dropdown
         JLabel semesterLabel = new JLabel("SEMESTER:");
         semesterLabel.setFont(new Font("SansSerif", Font.BOLD, 14));
         semesterLabel.setBounds(50, currentY, labelWidth, fieldHeight);
@@ -142,7 +129,6 @@ public class ProfileFormPage extends JFrame {
         formContainer.add(semesterCombo);
         currentY += fieldHeight + gap;
 
-        // Courses text area
         JLabel coursesLabel = new JLabel("COURSES:");
         coursesLabel.setFont(new Font("SansSerif", Font.BOLD, 14));
         coursesLabel.setBounds(50, currentY, labelWidth, fieldHeight);
@@ -156,7 +142,6 @@ public class ProfileFormPage extends JFrame {
         formContainer.add(coursesScroll);
         currentY += 80 + gap;
 
-        // Save button (centered)
         saveButton = new JButton("SAVE");
         saveButton.setFont(new Font("SansSerif", Font.BOLD, 14));
         saveButton.setForeground(Color.WHITE);
@@ -169,7 +154,6 @@ public class ProfileFormPage extends JFrame {
         addButtonHoverEffect(saveButton);
         formContainer.add(saveButton);
 
-        // On Save button click, print the form values to the console.
         saveButton.addActionListener(e -> {
             String name = nameField.getText();
             String rollNo = rollField.getText();
@@ -217,7 +201,6 @@ public class ProfileFormPage extends JFrame {
         });
     }
 
-    // Hover effect for the Save button: on hover, change background to greenish-blue and font color to black.
     private void addButtonHoverEffect(JButton btn) {
         Color normalBg = new Color(0,122,204);
         btn.setBackground(normalBg);
@@ -235,13 +218,11 @@ public class ProfileFormPage extends JFrame {
         });
     }
 
-    // Custom GradientPanel with a lighter grayish gradient background.
     private static class GradientPanel extends JPanel {
         @Override
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
             Graphics2D g2d = (Graphics2D) g;
-            // Lighter gradient: from light gray at top to very light gray at bottom.
             GradientPaint gp = new GradientPaint(
                     0, 0, new Color(200,200,200),
                     getWidth(), getHeight(), new Color(240,240,240)
@@ -251,7 +232,6 @@ public class ProfileFormPage extends JFrame {
         }
     }
 
-    // Rounded border for buttons
     private static class RoundedBorder implements Border {
         private int radius;
         public RoundedBorder(int radius) {

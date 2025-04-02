@@ -6,7 +6,6 @@ import java.util.*;
 
 public class GetReportInformation {
 
-    // Fetch student details
     public static Map<String, String> getStudentDetails(int studentId) {
         Map<String, String> studentInfo = new HashMap<>();
         String query = "SELECT s.name, s.reg_no, s.roll, u.email FROM students s JOIN users u ON s.user_id = u.id WHERE s.id = ?";
@@ -28,7 +27,6 @@ public class GetReportInformation {
         return studentInfo;
     }
 
-    // Fetch overall attendance summary
     public static Map<String, Integer> getAttendanceSummary(int studentId) {
         Map<String, Integer> summary = new HashMap<>();
         String query = "SELECT COUNT(*) AS total_classes, SUM(CASE WHEN status = 'present' THEN 1 ELSE 0 END) AS attended FROM attendances WHERE student_id = ?";
@@ -51,7 +49,6 @@ public class GetReportInformation {
         return summary;
     }
 
-    // Fetch subject-wise attendance
     public static List<Map<String, String>> getSubjectAttendance(int studentId) {
         List<Map<String, String>> subjects = new ArrayList<>();
         String query = "SELECT c.name AS subject, COUNT(a.id) AS total_classes, " +
@@ -82,7 +79,6 @@ public class GetReportInformation {
         return subjects;
     }
 
-    // Fetch attendance trend (for line graph)
     public static List<Map<String, Object>> getAttendanceTrend(int studentId) {
         List<Map<String, Object>> trend = new ArrayList<>();
         String query = "SELECT date, " +
@@ -106,7 +102,6 @@ public class GetReportInformation {
         return trend;
     }
 
-    // Fetch faculty details (if needed)
     public static Map<String, String> getFacultyDetails(int facultyId) {
         Map<String, String> facultyInfo = new HashMap<>();
         String query = "SELECT name, expertise, designation FROM faculty WHERE id = ?";
@@ -129,7 +124,7 @@ public class GetReportInformation {
 
     public static void main(String[] args) {
         // Example Usage
-        int studentId = 1; // Replace with an actual student ID
+        int studentId = 1; 
 
         System.out.println("Student Details:");
         System.out.println(getStudentDetails(studentId));

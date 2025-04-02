@@ -291,7 +291,6 @@ public class StudentDashboard extends JFrame {
         });
         sidebar.add(optionStudentAttendanceReportLabel);
 
-        // Header Panel
         JPanel headerPanel = new JPanel(null);
         headerPanel.setBounds(210, 10, 760, 40);
         headerPanel.setBackground(new Color(255, 255, 255, 80));
@@ -313,7 +312,6 @@ public class StudentDashboard extends JFrame {
         headerPanel.add(dashboardLabel);
         headerPanel.add(logoutButton);
 
-        // Info Panel
         JPanel topInfoPanel = new JPanel(null);
         topInfoPanel.setBounds(210, 70, 550, 150);
         topInfoPanel.setBackground(new Color(255, 255, 255, 80));
@@ -339,7 +337,6 @@ public class StudentDashboard extends JFrame {
         topInfoPanel.add(courseLabel);
         topInfoPanel.add(regdLabel);
 
-        // Circular Progress Panel (Attendance %)
         progressPanel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
@@ -371,7 +368,6 @@ public class StudentDashboard extends JFrame {
         statsPanel.setBounds(210, 250, 760, 400);
         statsPanel.setOpaque(false);
 
-        // Bar Chart Panel
         JPanel barChartPanel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
@@ -407,7 +403,6 @@ public class StudentDashboard extends JFrame {
         barChartPanel.setBounds(0, 0, 355, 400);
         barChartPanel.setOpaque(false);
 
-        // Streaks Panel
         JPanel streaksPanel = new JPanel();
         streaksPanel.setLayout(new GridLayout(3, 1, 10, 10));
         streaksPanel.setBounds(380, 50, 370, 300);

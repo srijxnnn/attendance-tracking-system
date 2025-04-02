@@ -1,5 +1,5 @@
 INSERT INTO users (username, email, password, role) VALUES
-('john_doe', 'john@example.com', 'password123', 'student'),
+('anuj_kaushal', 'cse23058@iiitkalyani.ac.in', '123456', 'student'),
 ('alice_smith', 'alice@example.com', 'securepass', 'student'),
 ('bob_jackson', 'bob@example.com', 'bobpass2023', 'student'),
 ('jane_wilson', 'jane@example.com', 'janeSecure1', 'student'),
@@ -9,7 +9,7 @@ INSERT INTO users (username, email, password, role) VALUES
 ('emma_davis', 'emma@example.com', 'emmaSecure', 'student'),
 ('chris_martin', 'chris@example.com', 'chrispass', 'student'),
 ('olivia_taylor', 'olivia@example.com', 'oliviapass', 'student'),
-('john_adams', 'johndams@university.com', 'password123', 'faculty'),
+('oishila_maam', 'anujkaushal1068@gmail.com', '123456', 'faculty'),
 ('lisa_green', 'lisagreen@university.com', 'securepass', 'faculty'),
 ('mark_jones', 'markjones@university.com', 'markpassword', 'faculty'),
 ('emily_white', 'emilywhite@university.com', 'emilypassword', 'faculty'),
@@ -23,21 +23,21 @@ INSERT INTO users (username, email, password, role) VALUES
 
 
 INSERT INTO students (user_id, reg_no, name, roll) VALUES
-(1, 20250101, 'John Doe', 'CSE2025-01'),
-(2, 20250102, 'Alice Smith', 'CSE2025-02'),
-(3, 20250103, 'Bob Jackson', 'CSE2025-03'),
-(4, 20250104, 'Jane Wilson', 'CSE2025-04'),
-(5, 20250105, 'Michael Brown', 'CSE2025-05'),
-(6, 20250106, 'Sarah Lee', 'CSE2025-06'),
-(7, 20250107, 'David Clark', 'CSE2025-07'),
-(8, 20250108, 'Emma Davis', 'CSE2025-08'),
-(9, 20250109, 'Chris Martin', 'CSE2025-09'),
-(10, 20250110, 'Olivia Taylor', 'CSE2025-10');
+(1, 1106, 'Anuj Kaushal', 'CSE/23058'),
+(2, 1107, 'Alice Smith', 'CSE/23059'),
+(3, 1108, 'Bob Jackson', 'CSE/23060'),
+(4, 1109, 'Jane Wilson', 'CSE/23061'),
+(5, 1110, 'Michael Brown', 'CSE/230562'),
+(6, 1111, 'Sarah Lee', 'CSE/23063'),
+(7, 1112, 'David Clark', 'CSE/23064'),
+(8, 1113, 'Emma Davis', 'CSE/23065'),
+(9, 1114, 'Chris Martin', 'CSE/23066'),
+(10, 1115, 'Olivia Taylor', 'CSE/23067');
 
 
 
 INSERT INTO faculty (user_id, name, expertise, designation, last_seen) VALUES
-(11, 'Dr. John Adams', 'Mathematics', 'Associate Professor', '2025-03-01 09:00:00'),
+(11, 'Prof. Oishila Bandyopadhyay', 'Computer Vision', 'Professor', '2025-03-01 09:00:00'),
 (12, 'Prof. Lisa Green', 'Literature', 'Professor', '2025-03-02 09:15:00'),
 (13, 'Dr. Mark Jones', 'Computer Science', 'Assistant Professor', '2025-03-03 09:30:00'),
 (14, 'Prof. Emily White', 'Art', 'Associate Professor', '2025-03-04 10:00:00'),
@@ -51,7 +51,7 @@ INSERT INTO faculty (user_id, name, expertise, designation, last_seen) VALUES
 
 
 INSERT INTO courses (name, code, semester) VALUES
-('Database Systems', 'DB101', 3),
+('Natural Language Processing', 'NL101', 3),
 ('Operating Systems', 'OS102', 4),
 ('Computer Networks', 'CN103', 5),
 ('Artificial Intelligence', 'AI104', 6),
@@ -263,4 +263,7 @@ INSERT INTO student_leaves (student_id, date, course_id, status, reason) VALUES
 (7, '2025-03-14', 7, 'pending', 'Not feeling well'),
 (8, '2025-03-18', 8, 'accepted', 'Health checkup'),
 (9, '2025-03-20', 9, 'rejected', 'Class attendance was mandatory'),
-(10, '2025-03-25', 10, 'pending', 'Unexpected travel plans');
+(1, '2025-03-25', 1, 'pending', 'Unexpected travel plans'),
+(2, '2025-03-25', 1, 'pending', 'Family emergency'),
+(3, '2025-03-25', 1, 'pending', 'Had prior commitments'),
+(4, '2025-03-25', 2, 'pending', 'Unexpected travel plans');

@@ -15,16 +15,6 @@ CREATE TABLE students (
                           roll VARCHAR(50) NOT NULL
 );
 
-
-CREATE TABLE attendances (
-                             id INT AUTO_INCREMENT PRIMARY KEY,
-                             student_id INT NOT NULL,
-                             date DATE NOT NULL DEFAULT CURRENT_DATE,
-                             course_id INT NOT NULL,
-                             status ENUM('present', 'absent') NOT NULL,
-                             FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE
-);
-
 CREATE TABLE courses (
                          id INT AUTO_INCREMENT PRIMARY KEY,
                          name VARCHAR(100) NOT NULL,
@@ -68,6 +58,15 @@ CREATE TABLE faculty_courses (
                                  FOREIGN KEY (course_id) REFERENCES courses(id) ON DELETE CASCADE
 );
 
+SET FOREIGN_KEY_CHECKS = 0;
+CREATE TABLE attendances (
+                             id INT AUTO_INCREMENT PRIMARY KEY,
+                             student_id INT NOT NULL,
+                             date DATE NOT NULL,
+                             course_id INT NOT NULL,
+                             status ENUM('present', 'absent') NOT NULL,
+                             FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE
+);
 
 INSERT INTO students (user_id, roll, name, reg_no) VALUES
                                                        (1, 'CSE/23101', 'Alice Johnson', '1149'),
@@ -133,4 +132,3 @@ INSERT INTO users (username, email, password, role) VALUES
                                                         ('dr.charliebrown', 'dr.charlie@example.com', 'pass123', 'faculty'),
                                                         ('dr.danielwilliams', 'dr.daniel@example.com', 'pass123', 'faculty'),
                                                         ('dr.emilydavis', 'dr.emily@example.com', 'pass123', 'faculty');
-
