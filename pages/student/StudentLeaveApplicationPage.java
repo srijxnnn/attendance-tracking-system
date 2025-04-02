@@ -11,6 +11,8 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.*;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 import javax.swing.table.DefaultTableModel;
 
 public class StudentLeaveApplicationPage extends JFrame {
@@ -330,6 +332,18 @@ public class StudentLeaveApplicationPage extends JFrame {
         // Fill the combo box with the student's courses from the courseMap
         subjectComboBox = new JComboBox<>(courseMap.keySet().toArray(new String[0]));
         subjectComboBox.setBounds(160, 30, 200, 30);
+        subjectComboBox.addPopupMenuListener(new PopupMenuListener() {
+            @Override
+            public void popupMenuWillBecomeVisible(PopupMenuEvent e) {}
+            @Override
+            public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+                // Force a repaint so the gradient is redrawn
+                backgroundPanel.repaint();
+            }
+            @Override
+            public void popupMenuCanceled(PopupMenuEvent e) {}
+        });
+
 
         // Reason for Leave
         JLabel reasonLabel = new JLabel("Reason for Leave:");
