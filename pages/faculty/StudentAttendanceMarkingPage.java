@@ -1,8 +1,6 @@
 package pages.faculty;
  
  import db.DatabaseConnection;
- import pages.auth.UserAuthentication;
-
  import java.awt.*;
  import java.awt.event.*;
  import java.awt.geom.RoundRectangle2D;
@@ -16,23 +14,22 @@ package pages.faculty;
  import java.util.List;
  import javax.swing.*;
  import javax.swing.plaf.basic.BasicScrollBarUI;
+ import pages.auth.UserAuthentication;
 
- public class StudentAttendanceMarkingPage extends JFrame {
- 
-    private final String[] options = {"Dashboard", "Leave Request", "Mark Attendance", "Student Attendance Report"};
-    private final String[] semesters = {"Semester 1", "Semester 2", "Semester 3", "Semester 4",
+ public class StudentAttendanceMarkingPage extends JFrame 
+ { 
+    private final String[] options={"Dashboard", "Leave Request", "Mark Attendance", "Student Attendance Report"};
+    private final String[] semesters={"Semester 1", "Semester 2", "Semester 3", "Semester 4",
                                         "Semester 5", "Semester 6", "Semester 7", "Semester 8"};
     private final String[] dates;
     private final String[] subjects;
 
-    // Instance variables for the combo boxes.
     private JComboBox<String> semesterCombo;
     private JComboBox<String> dateCombo;
     private JComboBox<String> subjectCombo;
 
-    // List to hold student data.
-    private final List<StudentData> studentList = new ArrayList<>();
-    private JPanel contentPanel;  // Instance variable to update table data later.
+    private final List<StudentData> studentList=new ArrayList<>();
+    private JPanel contentPanel;
 
     int userID;
     public StudentAttendanceMarkingPage(int userID) 
@@ -63,7 +60,6 @@ package pages.faculty;
         contentPanel = new JPanel(null);
         contentPanel.setOpaque(false);
         contentPanel.setPreferredSize(new Dimension(760, 600));
-        // Initially, show empty data.
         refreshTableData(new ArrayList<>());
 
         JScrollPane scrollPane = new JScrollPane(contentPanel);
@@ -71,7 +67,8 @@ package pages.faculty;
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
-        scrollPane.getVerticalScrollBar().setUI(new BasicScrollBarUI() {
+        scrollPane.getVerticalScrollBar().setUI(new BasicScrollBarUI() 
+        {
             @Override
             protected void configureScrollBarColors() 
             {}
@@ -106,7 +103,8 @@ package pages.faculty;
 
         });
 
-        scrollPane.getHorizontalScrollBar().setUI(new BasicScrollBarUI() {
+        scrollPane.getHorizontalScrollBar().setUI(new BasicScrollBarUI() 
+        {
             @Override
             protected void paintTrack(Graphics g, JComponent c, Rectangle trackBounds) 
             {}
@@ -120,11 +118,9 @@ package pages.faculty;
         backgroundPanel.add(scrollPane);
     }
 
-    // Method to refresh the table with new student data and add the mark button dynamically.
     private void refreshTableData(List<StudentData> newData) 
     {
-        contentPanel.removeAll(); // Clear existing rows.
-        // Add header row.
+        contentPanel.removeAll(); 
         TableHeaderRow headerRow = new TableHeaderRow();
         headerRow.setBounds(0, 0, 760, 50);
         contentPanel.add(headerRow);
@@ -138,12 +134,10 @@ package pages.faculty;
             startY += 60;
         }
         
-        // Create the "Mark Attendance" button dynamically.
         JButton markBtn = new JButton("Mark Attendance");
         markBtn.setBackground(Color.BLUE);
         markBtn.setForeground(Color.WHITE);
         markBtn.setFocusPainted(false);
-        // Change color on hover.
         markBtn.addMouseListener(new MouseAdapter() 
         {
             @Override
@@ -157,7 +151,6 @@ package pages.faculty;
                 markBtn.setBackground(Color.BLUE);
             }
         });
-        // When clicked, print out the selected date and each row's attendance.
         markBtn.addActionListener(e -> {
             String selectedDate = (String) dateCombo.getSelectedItem();
             System.out.println("Selected Date: " + selectedDate);
@@ -167,8 +160,8 @@ package pages.faculty;
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
             Date date=null;
-            try {
-                date = sdf.parse(selectedDate);
+            try{
+                date=sdf.parse(selectedDate);
                 System.out.println("Converted Date: " + date);
             } 
             catch(ParseException except) 
@@ -179,8 +172,10 @@ package pages.faculty;
             if(checkDates(date, course_id))
             {
                 Component[] comps = contentPanel.getComponents();
-                for (Component comp : comps) {
-                    if (comp instanceof TableDataRow) {
+                for(Component comp : comps) 
+                {
+                    if(comp instanceof TableDataRow) 
+                    {
                         TableDataRow row = (TableDataRow) comp;
                         int student_id=getStudentId(row.getRegdNo());
 
@@ -197,9 +192,11 @@ package pages.faculty;
             else
             {
                 Component[] comps = contentPanel.getComponents();
-                for (Component comp : comps) {
-                    if (comp instanceof TableDataRow) {
-                        TableDataRow row = (TableDataRow) comp;
+                for(Component comp : comps) 
+                {
+                    if(comp instanceof TableDataRow) 
+                    {
+                        TableDataRow row=(TableDataRow) comp;
                         int student_id=getStudentId(row.getRegdNo());
 
                         System.out.println("Regd No: " + row.getRegdNo() +
@@ -217,25 +214,23 @@ package pages.faculty;
 
             
         });
-        // Place the button at the center below the last table row with an extra 50-pixel spacing.
         int buttonWidth = 150;
         int buttonHeight = 40;
         int buttonX = (760 - buttonWidth) / 2;
         int buttonY = startY + 50;
         markBtn.setBounds(buttonX, buttonY, buttonWidth, buttonHeight);
         contentPanel.add(markBtn);
-
-        // Update preferred size to include the button and a small margin.
         contentPanel.setPreferredSize(new Dimension(760, buttonY + buttonHeight + 10));
         contentPanel.revalidate();
         contentPanel.repaint();
     }
 
-    private JPanel createSidebar() {
+    private JPanel createSidebar() 
+    {
         JPanel sidebar = new JPanel(null);
         sidebar.setBackground(new Color(51, 51, 51));
-
-        JPanel userPanel = new JPanel(null) {
+        JPanel userPanel = new JPanel(null) 
+        {
             private Image profileImage;
 
             {
@@ -243,13 +238,13 @@ package pages.faculty;
             }
 
             @Override
-            protected void paintComponent(Graphics g) {
+            protected void paintComponent(Graphics g) 
+            {
                 super.paintComponent(g);
                 Graphics2D g2 = (Graphics2D) g;
-                int d = 60; // Diameter of the circle.
+                int d = 60;
                 int x = (getWidth() - d) / 2;
                 int y = 20;
-                // Draw the image scaled to fit within the circle bounds.
                 g2.drawImage(profileImage, x, y, d, d, this);
             }
         };
@@ -412,7 +407,6 @@ package pages.faculty;
             }
         };
         topPanel.setBackground(new Color(255, 255, 255, 80));
-        // Initialize combo boxes as instance variables.
         semesterCombo = new JComboBox<>(semesters);
         semesterCombo.setBounds(20, 10, 100, 30);
         topPanel.add(semesterCombo);
@@ -425,7 +419,6 @@ package pages.faculty;
         subjectCombo.setBounds(240, 10, 120, 30);
         topPanel.add(subjectCombo);
 
-        // When any combobox selection changes, fetch student data based on the selected subject.
         ActionListener selectionListener = e -> {
             String selectedSemester = (String) semesterCombo.getSelectedItem();
             String selectedDate = (String) dateCombo.getSelectedItem();
@@ -520,7 +513,8 @@ package pages.faculty;
             setBorder(null);
         }
         @Override
-        protected void paintComponent(Graphics g) {
+        protected void paintComponent(Graphics g) 
+        {
             Graphics2D g2 = (Graphics2D) g.create();
             int w = getWidth();
             int h = getHeight();
@@ -538,14 +532,16 @@ package pages.faculty;
             g.drawString("Attendance", 530, h / 2 + 5);
         }
     }
-    private class TableDataRow extends JPanel {
+    private class TableDataRow extends JPanel 
+    {
         private float fadeAlpha = 0f;
         private int hoverOffset = 0;
         private Timer fadeTimer, hoverTimer;
         private final StudentData data;
         private JRadioButton presentRadio;
         private JRadioButton absentRadio;
-        public TableDataRow(StudentData data) {
+        public TableDataRow(StudentData data) 
+        {
             this.data = data;
             setLayout(null);
             setOpaque(false);
@@ -554,16 +550,21 @@ package pages.faculty;
                 if (fadeAlpha < 1f) {
                     fadeAlpha += 0.05f;
                     repaint();
-                } else {
+                } 
+                else 
+                {
                     fadeAlpha = 1f;
                     fadeTimer.stop();
                 }
             });
             fadeTimer.start();
-            addMouseListener(new MouseAdapter() {
+            addMouseListener(new MouseAdapter() 
+            {
                 @Override
-                public void mouseEntered(MouseEvent e) {
-                    if (hoverTimer != null && hoverTimer.isRunning()) {
+                public void mouseEntered(MouseEvent e) 
+                {
+                    if (hoverTimer != null && hoverTimer.isRunning()) 
+                    {
                         hoverTimer.stop();
                     }
 
@@ -571,22 +572,28 @@ package pages.faculty;
                         if (hoverOffset > -5) {
                             hoverOffset--;
                             repaint();
-                        } else {
+                        } 
+                        else 
+                        {
                             hoverTimer.stop();
                         }
                     });
                     hoverTimer.start();
                 }
                 @Override
-                public void mouseExited(MouseEvent e) {
-                    if (hoverTimer != null && hoverTimer.isRunning()) {
+                public void mouseExited(MouseEvent e) 
+                {
+                    if (hoverTimer != null && hoverTimer.isRunning()) 
+                    {
                         hoverTimer.stop();
                     }
                     hoverTimer = new Timer(10, ee -> {
                         if (hoverOffset < 0) {
                             hoverOffset++;
                             repaint();
-                        } else {
+                        } 
+                        else 
+                        {
                             hoverTimer.stop();
                         }
                     });
@@ -611,7 +618,8 @@ package pages.faculty;
         }
 
         @Override
-        protected void paintComponent(Graphics g) {
+        protected void paintComponent(Graphics g) 
+        {
             Graphics2D g2 = (Graphics2D) g.create();
             int w = getWidth();
             int h = getHeight();
@@ -630,28 +638,34 @@ package pages.faculty;
             g.drawString(data.name, 280, getHeight() / 2 + 5);
         }
         
-        public String getRegdNo() {
+        public String getRegdNo() 
+        {
             return data.regdNo;
         }
-        public String getName() {
+        public String getName() 
+        {
             return data.name;
         }
-        public String getAttendance() {
+        public String getAttendance() 
+        {
             return presentRadio.isSelected() ? "Present" : "Absent";
         }
     }
-    private static class StudentData {
+    private static class StudentData 
+    {
         String regdNo;
         String name;
         boolean isPresent;
-        public StudentData(String regdNo, String name, boolean isPresent) {
+        public StudentData(String regdNo, String name, boolean isPresent) 
+        {
             this.regdNo = regdNo;
             this.name = name;
             this.isPresent = isPresent;
         }
 
         @Override
-        public String toString() {
+        public String toString() 
+        {
             return "StudentData{" +
                    "regdNo='" + regdNo + '\'' +
                    ", name='" + name + '\'' +
@@ -659,9 +673,11 @@ package pages.faculty;
                    '}';
         }
     }
-    private class GradientPanel extends JPanel {
+    private class GradientPanel extends JPanel 
+    {
         @Override
-        protected void paintComponent(Graphics g) {
+        protected void paintComponent(Graphics g) 
+        {
             super.paintComponent(g);
             Graphics2D g2d = (Graphics2D) g;
             GradientPaint gp = new GradientPaint(
@@ -672,47 +688,59 @@ package pages.faculty;
             g2d.fillRect(0, 0, getWidth(), getHeight());
         }
     }
-    private String[] getSubjectCodes(int user_id) {
+    private String[] getSubjectCodes(int user_id) 
+    {
         List<String> subjectList = new ArrayList<>();
         String query = "SELECT c.code FROM courses AS c, faculty AS f, faculty_courses AS fc WHERE f.id = fc.faculty_id AND fc.course_id = c.id AND f.user_id = ?";
         try (Connection conn = DatabaseConnection.getInstance();
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
+             PreparedStatement pstmt = conn.prepareStatement(query)) 
+            {
             pstmt.setInt(1, user_id);
             ResultSet rs = pstmt.executeQuery();
-            while (rs.next()) {
+            while (rs.next()) 
+            {
                 subjectList.add(rs.getString("code"));
             }
-        } catch (SQLException e) {
+        } 
+        catch (SQLException e) 
+        {
             e.printStackTrace();
         }
         return subjectList.toArray(new String[0]);
     }
 
-    public static List<String> getRecent7Days() {
+    public static List<String> getRecent7Days() 
+    {
         List<String> dates = new ArrayList<>();
         LocalDate today = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < 7; i++) 
+        {
             LocalDate date = today.minusDays(i);
             dates.add(date.format(formatter));
         }
         return dates;
     }
 
-    // Fetch student data based on the selected subject code.
-    private List<StudentData> fetchStudentData(String subjectCode) {
+
+    private List<StudentData> fetchStudentData(String subjectCode) 
+    {
         List<StudentData> studentDataList = new ArrayList<>();
         String query = "SELECT s.roll, s.name FROM students AS s, courses AS c, student_courses AS sc WHERE s.id = sc.student_id AND sc.course_id = c.id AND c.code = ? ORDER BY s.roll ASC";
         try (Connection conn = DatabaseConnection.getInstance();
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
+             PreparedStatement pstmt = conn.prepareStatement(query)) 
+            {
             pstmt.setString(1, subjectCode);
             ResultSet rs = pstmt.executeQuery();
-            while (rs.next()) {
+            while (rs.next()) 
+            {
                 String regdNo = rs.getString("roll");
                 String name = rs.getString("name");
                 studentDataList.add(new StudentData(regdNo, name, true));
             }
-        } catch (SQLException e) {
+        } 
+        catch(SQLException e) 
+        {
             e.printStackTrace();
         }
         return studentDataList;
@@ -722,7 +750,7 @@ package pages.faculty;
     {
         int studentId=0;
         String query = "SELECT id FROM students WHERE roll = ?";
-        try (Connection conn = DatabaseConnection.getInstance();
+        try(Connection conn = DatabaseConnection.getInstance();
              PreparedStatement pstmt = conn.prepareStatement(query)) 
         {
             pstmt.setString(1, roll);
@@ -768,7 +796,7 @@ package pages.faculty;
         java.util.Date utilDate = date; // your java.util.Date instance
         java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
 
-        try(Connection conn= DatabaseConnection.getInstance();
+        try(Connection conn=DatabaseConnection.getInstance();
             PreparedStatement pstmt=conn.prepareStatement(query))
         {
             pstmt.setInt(1,student_id);
@@ -824,7 +852,8 @@ package pages.faculty;
 
         String query = "SELECT s.roll, s.name, a.status FROM students AS s, attendances AS a WHERE s.id=a.student_id AND a.date=? AND a.course_id=? ORDER BY s.roll ASC";
         try (Connection conn = DatabaseConnection.getInstance();
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
+             PreparedStatement pstmt = conn.prepareStatement(query)) 
+            {
             pstmt.setDate(1, sqlDate);
             pstmt.setInt(2, course_id);
             ResultSet rs = pstmt.executeQuery();
@@ -842,7 +871,9 @@ package pages.faculty;
                 }
                 
             }
-        } catch (SQLException e) {
+        } 
+        catch(SQLException e) 
+        {
             e.printStackTrace();
         }
         return studentDataList;
@@ -878,7 +909,8 @@ package pages.faculty;
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) 
+    {
         SwingUtilities.invokeLater(() -> new StudentAttendanceMarkingPage(6).setVisible(true));
     }
 }

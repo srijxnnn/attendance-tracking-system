@@ -11,24 +11,24 @@ import javax.swing.*;
 import javax.swing.plaf.basic.BasicScrollBarUI;
 import pages.auth.UserAuthentication;
 
-public class FacultyDashboard extends JFrame {
+public class FacultyDashboard extends JFrame 
+{
 
-    private int animationProgress = 0;
-    // Table data loaded dynamically from DB
-    private List<TableRowData> tableData = new ArrayList<>();
+    private int animationProgress=0;
+    private List<TableRowData> tableData=new ArrayList<>();
     private int userId;
 
-    // Faculty info fields
     private String facultyName = "Unknown";
     private String facultyExpertise = "";
     private String facultyDesignation = "";
     private String facultyLastSeen = "";
     private int faculty_id;
 
-    public FacultyDashboard(int userId) {
+    public FacultyDashboard(int userId) 
+    {
         this.userId = userId;
-        loadFacultyInfo();   // Load name, expertise, designation, last_seen
-        loadTableData();     // Load dashboard table data from DB
+        loadFacultyInfo();   
+        loadTableData();     
         setTitle("Faculty Dashboard");
         setSize(1000, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -116,10 +116,6 @@ public class FacultyDashboard extends JFrame {
         updateLastSeen();
     }
 
-    /**
-     * Loads the faculty's name, expertise, designation, and last_seen from the
-     * database based on the userId.
-     */
     private void loadFacultyInfo() {
         String query = "SELECT id, name, expertise, designation, last_seen FROM faculty WHERE user_id = ?";
         try (Connection conn = DatabaseConnection.getInstance(); PreparedStatement ps = conn.prepareStatement(query)) {
@@ -130,7 +126,6 @@ public class FacultyDashboard extends JFrame {
                     facultyName = rs.getString("name");
                     facultyExpertise = rs.getString("expertise");
                     facultyDesignation = rs.getString("designation");
-                    // Retrieve last_seen as a Timestamp and convert to string.
                     Timestamp ts = rs.getTimestamp("last_seen");
                     facultyLastSeen = (ts != null) ? ts.toString() : "Unknown";
                 }
@@ -140,11 +135,7 @@ public class FacultyDashboard extends JFrame {
         }
     }
 
-    /**
-     * Loads table data from the database. For each course taught by this
-     * faculty, retrieve: - course code - semester (assumed to be a column in
-     * courses) - total number of students enrolled (from student_courses)
-     */
+  
     private void loadTableData() {
         tableData.clear();
         int facultyId = 0;
@@ -196,10 +187,10 @@ public class FacultyDashboard extends JFrame {
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 Graphics2D g2 = (Graphics2D) g;
-                int d = 60; // Diameter of the circle.
+                int d = 60; 
                 int x = (getWidth() - d) / 2;
                 int y = 20;
-                // Draw the image scaled to fit within the circle bounds.
+               
                 g2.drawImage(profileImage, x, y, d, d, this);
             }
         };
@@ -207,7 +198,6 @@ public class FacultyDashboard extends JFrame {
         userPanel.setBounds(0, 0, 200, 150);
         userPanel.setBackground(new Color(51, 51, 51));
 
-        // Use the loaded facultyName.
         JLabel usernameLabel = new JLabel(facultyName, SwingConstants.CENTER);
         usernameLabel.setForeground(Color.WHITE);
         usernameLabel.setFont(new Font("SansSerif", Font.BOLD, 14));
@@ -381,30 +371,30 @@ public class FacultyDashboard extends JFrame {
         headerPanel.add(exportBtn);
         exportBtn.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                // Create a waiting dialog
+            public void actionPerformed(ActionEvent e) 
+            {
                 JOptionPane waitingDialog = new JOptionPane("Sending attendance warnings...", JOptionPane.INFORMATION_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
                 JDialog dialog = waitingDialog.createDialog("Processing");
                 dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
         
-                // Run in a background thread using SwingWorker
                 SwingWorker<Void, Void> worker = new SwingWorker<>() {
                     @Override
-                    protected Void doInBackground() throws Exception {
-                        // Call the mailer function
+                    protected Void doInBackground() throws Exception 
+                    {
                         AttendanceWarningMailer.sendWarnings(faculty_id);
                         return null;
                     }
         
                     @Override
-                    protected void done() {
-                        dialog.dispose(); // Close the waiting message
+                    protected void done() 
+                    {
+                        dialog.dispose(); 
                         JOptionPane.showMessageDialog(null, "All warning emails have been sent successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
                     }
                 };
         
-                worker.execute(); // Start the background task
-                dialog.setVisible(true); // Show waiting message
+                worker.execute(); 
+                dialog.setVisible(true);
             }
         });
         
