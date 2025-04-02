@@ -592,7 +592,7 @@ public class StudentCalendar extends JFrame {
     }
 
     private void animateAttendanceArc() {
-        progress = 0; // reset to 0 each time
+        progress = 0; 
         Timer timer = new Timer(20, e -> {
             if (progress < attendancePercentage) {
                 progress++;

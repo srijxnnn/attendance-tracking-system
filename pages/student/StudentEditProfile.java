@@ -158,7 +158,7 @@ public class StudentEditProfile extends JFrame {
 
     private void initUI() {
         setTitle("Edit Profile");
-        setSize(600, 300);
+        setSize(600, 330);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(null);
@@ -186,17 +186,17 @@ public class StudentEditProfile extends JFrame {
             });
             fadeTimer.start();
 
-            JPanel picPanel = new JPanel() {
+            JPanel picPanel = new JPanel() 
+            {
                 private Image profileImage = new ImageIcon("pages/profile-circle-border.png").getImage();
 
                 @Override
                 protected void paintComponent(Graphics g) {
                     super.paintComponent(g);
                     Graphics2D g2 = (Graphics2D) g;
-                    int d = Math.min(getWidth(), getHeight()) - 10; // Diameter of the circle.
+                    int d = Math.min(getWidth(), getHeight()) - 10;
                     int x = (getWidth() - d) / 2;
                     int y = (getHeight() - d) / 2;
-                    // Draw the image scaled to fit within the circle bounds.
                     g2.drawImage(profileImage, x, y, d, d, this);
                 }
             };
