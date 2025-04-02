@@ -266,7 +266,6 @@ public class UserAuthentication extends JFrame
         formPanel.repaint();
     }
 
-    //toSignIn -> True : Form <--> Left to Right : Logo <--> Right to Left
     public void animateTransition(boolean toSignIn)
     {
         int startFormX=formPanel.getX();

@@ -33,15 +33,14 @@ public class OtpVerificationDialog
 
     private static class OtpPanel extends JPanel 
     {
-        private float alpha = 0f; // for fade-in effect
+        private float alpha = 0f; 
         private Timer fadeTimer;
         private boolean phoneHover = false;
-        private JLabel phoneLabel; // will hold our mobile.png image
+        private JLabel phoneLabel; 
         private JTextField[] otpFields = new JTextField[6];
         private JButton verifyButton;
-        private String generatedOTP; // Store OTP for verification
-        private OTPService otpService; // OTP service object
-        // private String reviever = "cse23058@iiitkalyani.ac.in";
+        private String generatedOTP; 
+        private OTPService otpService; 
         private String username;
         private String email;
         private String password;
@@ -57,9 +56,9 @@ public class OtpVerificationDialog
             setPreferredSize(new Dimension(450, 400));
             setOpaque(false);
 
-            otpService = new OTPService(); // Create OTPService object
-            generatedOTP = OTPService.generateOTP(); // Generate OTP
-            OTPService.sendOTP(email, generatedOTP); // Send OTP on dialog open
+            otpService = new OTPService(); 
+            generatedOTP = OTPService.generateOTP(); 
+            OTPService.sendOTP(email, generatedOTP); 
             System.out.println(generatedOTP);
 
             // Start fade-in timer
@@ -73,30 +72,25 @@ public class OtpVerificationDialog
             });
             fadeTimer.start();
 
-            // Ensure that "mobile.png" is in your resource folder.
             ImageIcon phoneIcon = new ImageIcon(getClass().getResource("isolated-phone-icon-png.png"));
-            // Scale the image to fit the desired dimensions (100x170)
             Image scaledImage = phoneIcon.getImage().getScaledInstance(100, 170, Image.SCALE_SMOOTH);
             phoneIcon = new ImageIcon(scaledImage);
             phoneLabel = new JLabel(phoneIcon);
             phoneLabel.setBounds(175, 20, 100, 170);
             add(phoneLabel);
 
-            // OTP Verification label
             JLabel otpLabel = new JLabel("OTP VERIFICATION", SwingConstants.CENTER);
             otpLabel.setFont(new Font("SansSerif", Font.BOLD, 18));
             otpLabel.setForeground(Color.WHITE);
             otpLabel.setBounds(0, 190, getPreferredSize().width, 30);
             add(otpLabel);
 
-            // Instruction label
             JLabel instructionLabel = new JLabel("Code has been sent to your email", SwingConstants.CENTER);
             instructionLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
             instructionLabel.setForeground(Color.WHITE);
             instructionLabel.setBounds(0, 230, getPreferredSize().width, 25);
             add(instructionLabel);
 
-            // OTP Fields: 6 text fields arranged horizontally
             int fieldWidth = 40;
             int fieldHeight = 40;
             int spacing = 10;
@@ -107,7 +101,6 @@ public class OtpVerificationDialog
                 tf.setHorizontalAlignment(JTextField.CENTER);
                 tf.setFont(new Font("SansSerif", Font.BOLD, 24));
                 tf.setBounds(startX + i * (fieldWidth + spacing), otpY, fieldWidth, fieldHeight);
-                // Limit to 1 character using DocumentFilter.
                 ((AbstractDocument) tf.getDocument()).setDocumentFilter(new DocumentFilter() {
                     @Override
                     public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr)
@@ -124,7 +117,6 @@ public class OtpVerificationDialog
                         }
                     }
                 });
-                // Auto move focus to next field when a digit is entered.
                 tf.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
                     private void update() {
                         if (tf.getText().length() == 1) {
@@ -138,7 +130,6 @@ public class OtpVerificationDialog
                     }
                     @Override public void insertUpdate(javax.swing.event.DocumentEvent e) { update(); }
                     @Override public void removeUpdate(javax.swing.event.DocumentEvent e) {
-                        // If field becomes empty, move focus back if needed.
                         if(tf.getText().isEmpty()){
                             for(int j = 1; j < otpFields.length; j++){
                                 if(otpFields[j] == tf){
@@ -154,7 +145,6 @@ public class OtpVerificationDialog
                 add(tf);
             }
 
-            // Resend label: centered, with "Resend" bold and blue; clickable with hand cursor.
             JLabel resendLabel = new JLabel("<html><div style='text-align: center;'>Didn't get the OTP? <b><font color='blue'>Resend</font></b></div></html>", SwingConstants.CENTER);
             resendLabel.setFont(new Font("SansSerif", Font.PLAIN, 12));
             resendLabel.setBounds(0, otpY + 50, getPreferredSize().width, 20);
@@ -163,14 +153,13 @@ public class OtpVerificationDialog
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     JOptionPane.showMessageDialog(OtpPanel.this, "Otp Resent, Check your Inbox!");
-                    generatedOTP = OTPService.generateOTP(); // Generate OTP
-                    OTPService.sendOTP(email, generatedOTP); // Send OTP on dialog open
+                    generatedOTP = OTPService.generateOTP(); 
+                    OTPService.sendOTP(email, generatedOTP); 
                     System.out.println(generatedOTP);
                 }
             });
             add(resendLabel);
 
-            // Verify button: rounded corners (25% radius) and centered.
             verifyButton = new JButton("VERIFY");
             verifyButton.setFont(new Font("SansSerif", Font.BOLD, 14));
             verifyButton.setForeground(Color.WHITE);
@@ -223,12 +212,10 @@ public class OtpVerificationDialog
 
                 } else {
                     JOptionPane.showMessageDialog(this, "Incorrect OTP! Please enter the correct OTP.", "Error", JOptionPane.ERROR_MESSAGE);
-                    // Clear OTP fields
                     for (JTextField tf : otpFields) {
                         tf.setText("");
                     }
                     
-                    // Refocus on first field
                     otpFields[0].requestFocusInWindow();
                 }
             });
@@ -236,7 +223,6 @@ public class OtpVerificationDialog
 
         @Override
         protected void paintComponent(Graphics g) {
-            // Draw fade-in gradient background
             Graphics2D g2d = (Graphics2D) g.create();
             g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
             GradientPaint gp = new GradientPaint(
@@ -266,7 +252,6 @@ public class OtpVerificationDialog
             });
         }
 
-        // Rounded border for the button
         private class RoundedBorder implements Border {
             private int radius;
             public RoundedBorder(int radius) {
