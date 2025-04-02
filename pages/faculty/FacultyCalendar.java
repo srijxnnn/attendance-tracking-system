@@ -27,12 +27,15 @@ public class FacultyCalendar extends JFrame {
     private int presentCount, absentCount, unmarkedCount;
 
     private JPanel progressPanel;
-    private int attendancePercentage = 59;
+    private int attendancePercentage = 0;
     private int progress = 0;
+    private int studentIdFromRegNo=0;
+    private int courseId=0;
 
     private JLabel totalWorkingDaysLabel;
     private JLabel presentLabel;
     private JLabel absentLabel;
+    private JLabel attendanceLabel;
 
     private JComboBox<String> monthCombo;
     private JComboBox<String> yearCombo;
@@ -45,6 +48,7 @@ public class FacultyCalendar extends JFrame {
     // Faculty info
     private int userId;   // Faculty user id
     private String facultyName = "Unknown";
+    
 
     public FacultyCalendar(int userId) {
         this.userId = userId;
@@ -54,9 +58,6 @@ public class FacultyCalendar extends JFrame {
         rebuildCalendar();
     }
 
-    /**
-     * Loads the faculty's name from the database based on userId.
-     */
     private void loadFacultyInfo() {
         String query = "SELECT name FROM faculty WHERE user_id = ?";
         try (Connection conn = DatabaseConnection.getInstance();
@@ -120,6 +121,52 @@ public class FacultyCalendar extends JFrame {
         }
         return regNoList.toArray(new String[regNoList.size()]);
     }
+
+    private double getAttendancePercentage(int studentId, int course_id)
+    {
+        System.out.println(studentId+course_id);
+        double attendance_Percentage=0.0;
+        String query = "SELECT "
+                    + "(SELECT COUNT(*) FROM attendances WHERE student_id = ? AND course_id=?) AS total_days, "
+                    + "(SELECT COUNT(*) FROM attendances WHERE student_id = ? AND course_id=? AND status = 'absent') AS total_absent";
+        try (Connection conn = DatabaseConnection.getInstance();
+            PreparedStatement ps = conn.prepareStatement(query))  
+        {
+            ps.setInt(1, studentId);
+            ps.setInt(2, course_id);
+            ps.setInt(3, studentId);
+            ps.setInt(4, course_id);
+            try (ResultSet rs = ps.executeQuery()) 
+            {
+                if (rs.next()) 
+                {
+                    int totalDays   = rs.getInt("total_days");
+                    int totalAbsent = rs.getInt("total_absent");
+
+                    int workingDays = totalDays;
+                    int absences    = totalAbsent;
+
+                    int totalPresent = totalDays - totalAbsent;
+
+                    if (totalDays != 0) 
+                    {
+                        attendance_Percentage = ((double)totalPresent*100)/(double)workingDays;
+                    } 
+                    else 
+                    {
+                        attendance_Percentage = 0;
+                    }
+                }
+                return attendance_Percentage;
+            }
+        }
+        catch(SQLException e) 
+        {
+            e.printStackTrace();
+        }
+        return attendance_Percentage;
+    }
+    
 
     private void initUI() 
     {
@@ -268,6 +315,13 @@ public class FacultyCalendar extends JFrame {
         absentLabel.setBounds(500, 20, 150, 30);
         bottomPanel.add(absentLabel);
 
+        attendanceLabel = new JLabel("Attendance: 0 %");
+        attendanceLabel.setFont(new Font("SansSerif", Font.BOLD, 16));
+        attendanceLabel.setBounds(350, 60, 250, 30);
+        bottomPanel.add(attendanceLabel);
+
+
+
         monthCombo.addActionListener(e -> rebuildCalendar());
         yearCombo.addActionListener(e -> rebuildCalendar());
         subjectCombo.addActionListener(e -> rebuildCalendar());
@@ -291,10 +345,10 @@ public class FacultyCalendar extends JFrame {
 
         String selectedCourseCode=(String) subjectCombo.getSelectedItem();
         if(selectedCourseCode==null) return;
-        int courseId=courseMap.get(selectedCourseCode);
+        courseId=courseMap.get(selectedCourseCode);
 
         String selectedRegNo=(String) regdNoCombo.getSelectedItem();
-        int studentIdFromRegNo=getStudentIdFromRegNo(selectedRegNo);
+        studentIdFromRegNo=getStudentIdFromRegNo(selectedRegNo);
 
         Map<Integer, String> attendanceMap=fetchAttendanceMap(studentIdFromRegNo, courseId, selectedYear, selectedMonth);
 
@@ -431,6 +485,8 @@ public class FacultyCalendar extends JFrame {
         totalWorkingDaysLabel.setText("TOTAL WORKING DAYS: "+totalWorking);
         presentLabel.setText("Presents: "+presentCount);
         absentLabel.setText("Absents: "+absentCount);
+        attendanceLabel.setText("Attendance: "+Math.round(getAttendancePercentage(studentIdFromRegNo, courseId))+" %");
+
         if(totalWorking>0) 
         {
             attendancePercentage=(presentCount*100)/totalWorking;
@@ -750,7 +806,7 @@ public class FacultyCalendar extends JFrame {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            new FacultyCalendar(6).setVisible(true);
+            new FacultyCalendar(11).setVisible(true);
         });
     }
 }
